@@ -1,6 +1,7 @@
-from __future__ import print_function
-from builtins import input
+from __future__ import print_function  # input for both python 2 and 3 version
+from builtins import input             # input for both python 2 and 3 version
 import random
+#multiple line string
 HANGMANPICS = ['''
  
      +---+
@@ -85,7 +86,8 @@ def displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord):
      print()
 
 def getGuess(alreadyGuessed):
-     # Returns the letter the player entered. This function makes sure the player entered a single letter, and not something else.
+     # Returns the letter the player entered. This function makes sure the player entered a single letter, 
+     # and not something else.
      while True:
          print('Guess a letter.')
          guess = input()
@@ -134,7 +136,8 @@ while True:
          # Check if player has guessed too many times and lost
          if len(missedLetters) == len(HANGMANPICS) - 1:
              displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord)
-             print('You have run out of guesses!\nAfter ' + str(len(missedLetters)) + ' missed guesses and ' + str(len(correctLetters)) + ' correct guesses, the word was "' + secretWord + '"')
+             print('You have run out of guesses!\nAfter ' + str(len(missedLetters)) + ' missed guesses and ' 
+                + str(len(correctLetters)) + ' correct guesses, the word was "' + secretWord + '"')
              gameIsDone = True
 
      # Ask the player if they want to play again (but only if the game is done).
