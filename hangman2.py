@@ -1,15 +1,9 @@
 #
 # Topics Covered In This Chapter:
-#        Multi-line Strings
-#        Methods/functions
-#        Lists
-#        The append() and reverse() list methods
-#        The lower(), upper(), split(), startswith(), and endswith() string methods
-#        The in and not in operators
-#        The range() and list() functions
-#        for loops
-#        elif statements
-#
+#        Dictionary
+#        random.choice()
+#        multiple assignment
+#        
 
 from __future__ import print_function  # input for both python 2 and 3 version
 from builtins import input             # input for both python 2 and 3 version
