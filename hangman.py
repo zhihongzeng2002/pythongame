@@ -72,7 +72,7 @@ HANGMANPICS = ['''
    / \  |
         |
   =========''']
-words = 'ant bear cat dog'.split()
+words = 'ant bear cat dog beer'.split()
 
 def getRandomWord(wordList):
      # This function returns a random string from the passed list of strings.
