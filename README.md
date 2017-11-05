@@ -1,7 +1,5 @@
-# Python Game
+# Making Game with Python
 
-# code for Acton Chinese School in 2017
+# Code for Acton Chinese School in 2017
 
-# modified code for the class. 
-
-# The original code is at https://inventwithpython.com/chapters/
+# The reference is at https://inventwithpython.com/chapters/
