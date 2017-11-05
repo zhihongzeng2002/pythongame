@@ -1,4 +1,4 @@
-Quize:
+Quiz:
 
 1) 
 words = 'ant bear cat dog beer'
