@@ -1,0 +1,59 @@
+Quize:
+
+1) 
+words = 'ant bear cat dog beer'
+B = words.split()
+What is B?
+
+2) 
+def SelectWord(wordList, i):
+     word = wordList[i]
+     return word
+A = ['ant', 'bear', 'cat', 'dog', 'beer' ]
+w = SelectWord(A, 2)
+What is w?
+
+3)
+missedLetters = ['a', 'c', 't']
+for letter in missedLetters:
+    print(letter)
+What is the output?
+
+4) 
+blanks = '_' * 3
+What is blanks?
+
+5)
+for i in range(5):
+   print(i)
+What is the output?
+
+6)
+while True:
+    myInput = input('Input something to get out of the loop')
+    if myInput == 'no':
+       break;
+When you run the above code, the program will run forever. How do you get out of the loop?
+
+7)
+import random
+x = random.randint(0, 5)
+What is the possible value of x? 0,1,2,3,4,5,6,100?
+
+6)
+def getGuess(alreadyGuessed, w):
+    if len(guess) != 1:
+        print('Please enter a single letter.')
+    elif guess in alreadyGuessed:
+        print('You have already guessed that letter.')
+    elif guess not in 'abcdefghijklmnopqrstuvwxyz':
+        print('Please enter a LETTER.')
+    else:
+        alreadyGuessed = alreadyGuessed.append(w)
+    return alreadyGuessed
+
+mylist = ['a','b','c','d']
+B = getGuess(mylist, 'a'), what is B?
+B = getGuess(mylist, 'e'), What is B?
+B = getGuess(mylist, '1'), What is B?
+B = getGuess(mylist, 'something'), What is B?
