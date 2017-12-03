@@ -6,7 +6,7 @@ def main(srcfile, desfile):
             content = readfh.readlines()
 
             for x in content:
-                line = x[5:]
+                line = x[4:]
                 writefh.write(line)
                 
 
