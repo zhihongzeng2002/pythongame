@@ -88,7 +88,7 @@ words = {'Colors':'red orange yellow green blue white black brown'.split(),
 
 def getRandomWord(wordDict):
      # This function returns a random word from random chosen list which are from words dictionary.
-     listKey = random.choice(wordDict.keys())
+     listKey = random.choice(list(wordDict.keys()))
      wordChosen = random.choice(wordDict[listKey])
      return [wordChosen, listKey]
 
