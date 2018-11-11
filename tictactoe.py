@@ -3,7 +3,7 @@
 # Tic Tac Toe
 from __future__ import print_function
 from builtins import input
-import random
+import random, copy
 def drawBoard(board):
     # This function prints out the board that it was passed.
     # "board" is a list of 10 strings representing the board (ignore index 0)
@@ -51,9 +51,7 @@ def isWinner(bo, le):
     (bo[9] == le and bo[5] == le and bo[1] == le)) # diagonal
 def getBoardCopy(board):
     # Make a duplicate of the board list and return it the duplicate.
-    dupeBoard = []
-    for i in board:
-        dupeBoard.append(i)
+    dupeBoard = copy.deepcopy(board)
     return dupeBoard
 def isSpaceFree(board, move):
     # Return true if the passed move is free on the passed board.
