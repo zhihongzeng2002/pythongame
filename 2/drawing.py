@@ -1,10 +1,10 @@
 import pygame, sys
-from pygame.locals import *
+from pygame.locals import QUIT
 
 pygame.init()
 
 # set up the window
-DISPLAYSURF = pygame.display.set_mode((400, 300), 0, 32)
+DISPLAYSURF = pygame.display.set_mode((400, 300))
 pygame.display.set_caption('Drawing')
 
 # set up the colors
