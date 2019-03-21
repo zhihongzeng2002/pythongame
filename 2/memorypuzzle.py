@@ -183,13 +183,17 @@ def drawIcon(shape, color, boxx, boxy):
         pygame.draw.circle(DISPLAYSURF, color, (left + half, top + half), half - 5)
         pygame.draw.circle(DISPLAYSURF, BGCOLOR, (left + half, top + half), quarter - 5)
     elif shape == SQUARE:
-        pygame.draw.rect(DISPLAYSURF, color, (left + quarter, top + quarter, BOXSIZE - half, BOXSIZE - half))
+        pygame.draw.rect(DISPLAYSURF, color, \
+                        (left + quarter, top + quarter, BOXSIZE - half, BOXSIZE - half))
     elif shape == DIAMOND:
-        pygame.draw.polygon(DISPLAYSURF, color, ((left + half, top), (left + BOXSIZE - 1, top + half), (left + half, top + BOXSIZE - 1), (left, top + half)))
+        pygame.draw.polygon(DISPLAYSURF, color, \
+                        ((left + half, top), (left + BOXSIZE - 1, top + half), \
+                        (left + half, top + BOXSIZE - 1), (left, top + half)))
     elif shape == LINES:
         for i in range(0, BOXSIZE, 4):
             pygame.draw.line(DISPLAYSURF, color, (left, top + i), (left + i, top))
-            pygame.draw.line(DISPLAYSURF, color, (left + i, top + BOXSIZE - 1), (left + BOXSIZE - 1, top + i))
+            pygame.draw.line(DISPLAYSURF, color, \
+                    (left + i, top + BOXSIZE - 1), (left + BOXSIZE - 1, top + i))
     elif shape == OVAL:
         pygame.draw.ellipse(DISPLAYSURF, color, (left, top + quarter, BOXSIZE, half))
 
@@ -242,7 +246,8 @@ def drawBoard(board, revealed):
 
 def drawHighlightBox(boxx, boxy):
     left, top = leftTopCoordsOfBox(boxx, boxy)
-    pygame.draw.rect(DISPLAYSURF, HIGHLIGHTCOLOR, (left - 5, top - 5, BOXSIZE + 10, BOXSIZE + 10), 4)
+    pygame.draw.rect(DISPLAYSURF, HIGHLIGHTCOLOR, \
+                     (left - 5, top - 5, BOXSIZE + 10, BOXSIZE + 10), 4)
 
 
 def startGameAnimation(board):
