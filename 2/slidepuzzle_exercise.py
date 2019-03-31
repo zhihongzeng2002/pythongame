@@ -17,23 +17,20 @@ def main(FPS=10):
     
     while True:
         DISPLAYSURF.fill((0,  0, 0))
-        
         DISPLAYSURF.blit(helloSurf, helloRect)
         DISPLAYSURF.blit(worldSurf, worldRect)
-
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONUP:
-                    # check if the user clicked on an option button
-                    if helloRect.collidepoint(event.pos):
-                        textSurf, textRect = makeText('Hello is clicked', textColor, textBGColor, 100, 10)
-                        DISPLAYSURF.blit(textSurf, textRect)
-                    elif worldRect.collidepoint(event.pos):
-                        textSurf, textRect = makeText('World is clicked', textColor, textBGColor, 150, 50)
-                        DISPLAYSURF.blit(textSurf, textRect)
-        
+                # check if the user clicked on an option button
+                if helloRect.collidepoint(event.pos):
+                    textSurf, textRect = makeText('Hello is clicked', textColor, textBGColor, 100, 10)
+                    DISPLAYSURF.blit(textSurf, textRect)
+                elif worldRect.collidepoint(event.pos):
+                    textSurf, textRect = makeText('World is clicked', textColor, textBGColor, 150, 50)
+                    DISPLAYSURF.blit(textSurf, textRect)
         pygame.display.update()
         FPSCLOCK.tick(FPS)       
 
