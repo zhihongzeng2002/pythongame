@@ -70,7 +70,6 @@ def main():
         for event in pygame.event.get(): # event handling loop
             if event.type == MOUSEBUTTONUP:
                 spotx, spoty = getSpotClicked(mainBoard, event.pos[0], event.pos[1])
-
                 if (spotx, spoty) == (None, None):
                     # check if the user clicked on an option button
                     if RESET_RECT.collidepoint(event.pos):
@@ -84,7 +83,6 @@ def main():
                         allMoves = []
                 else:
                     # check if the clicked tile was next to the blank spot
-
                     blankx, blanky = getBlankPosition(mainBoard)
                     if spotx == blankx + 1 and spoty == blanky:
                         slideTo = LEFT
@@ -140,7 +138,7 @@ def getStartingBoard():
             column.append(counter)
             counter += BOARDWIDTH
         board.append(column)
-        counter -= BOARDWIDTH * (BOARDHEIGHT - 1) + BOARDWIDTH - 1
+        counter = counter - BOARDWIDTH * BOARDHEIGHT + 1
 
     board[BOARDWIDTH-1][BOARDHEIGHT-1] = BLANK
     return board
@@ -274,7 +272,6 @@ def slideAnimation(board, direction, message, animationSpeed):
     # draw a blank space over the moving tile on the baseSurf Surface.
     moveLeft, moveTop = getLeftTopOfTile(movex, movey)
     pygame.draw.rect(baseSurf, BGCOLOR, (moveLeft, moveTop, TILESIZE, TILESIZE))
-
     for i in range(0, TILESIZE, animationSpeed):
         # animate the tile sliding over
         checkForQuit()
@@ -293,8 +290,7 @@ def slideAnimation(board, direction, message, animationSpeed):
 
 
 def generateNewPuzzle(numSlides):
-    # From a starting configuration, make numSlides number of moves (and
-    # animate these moves).
+    # From a starting configuration, make numSlides number of moves (and # animate these moves).
     sequence = []
     board = getStartingBoard()
     drawBoard(board, '')
