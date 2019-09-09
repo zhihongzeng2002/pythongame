@@ -29,6 +29,6 @@ Questions in Class 1:
     What's printed?
 
     A) 74 then 74
-    B) 74 then 75
+    B) 73 then 74
     C) 74
     D) 75
