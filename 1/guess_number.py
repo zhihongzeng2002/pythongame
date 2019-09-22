@@ -1,9 +1,5 @@
-from __future__ import print_function
-from builtins import input
-
 import random
-
-guessesTaken = 0
+import sys
 
 print('Hello! What is your name?')
 myName = input()
@@ -11,26 +7,17 @@ myName = input()
 number = random.randint(1, 20)
 print('Well, ' + myName + ', I am thinking of a number between 1 and 20.')
 
-while guessesTaken < 6:
-    print('Take a guess. ')
-    guess = input()
-    guess = int(guess)
-
-    guessesTaken += 1
-
-    if guess < number:
-        print('Your guess is too low.')
-
-    if guess > number:
-        print('Your guess is too high.')
+for i in range(6):
+    guess = int(input('Take a guess. '))
 
     if guess == number:
-        break
+        print('Good job, ' + myName + '! You guess my number in ' + str(i+1) + ' guesses!')
+        sys.exit(0)
 
-if guess == number:
-    guessesTaken = str(guessesTaken)
-    print('Good job, ' + myName + '! You guess my number in ' + guessesTaken + ' guesses!')
+    elif guess < number:
+        print('Your guess is too low.')
 
-else: 
-    number = str(number)
-    print('Nope. The number I was thinking of was ' + number)
+    else:
+        print('Your guess is too high.')
+
+print('Nope. The number I was thinking of was ' + str(number))
