@@ -80,6 +80,7 @@ def guess_loop(secrete_word, max_guess):
     while remaining_guess > 0:
         print('You have {} guesses left'.format(remaining_guess))
         print('Available letters: {}'.format(get_available_letters(guessed)))
+        print(HANGMANPICS[max_guess-remaining_guess])
         letter = input('Please guess a letter: ')
         letter = letter.lower()
         if letter in secrete_word:
@@ -92,10 +93,10 @@ def guess_loop(secrete_word, max_guess):
             print('Oops! That letter is not in my word: {}'.format(get_guessed_word(secrete_word, guessed)))
             remaining_guess -= 1
 
+    print(HANGMANPICS[-1])
     print('Sorry, you ran out of guesses. The word was {}\n'.format(secrete_word))
 
 ##guess_loop('bear', 3)
-
 
 def hangman(max_guess):
     secrete_word = choose_word()
@@ -106,4 +107,62 @@ def hangman(max_guess):
     
     guess_loop(secrete_word, max_guess)
 
-hangman(4)
+HANGMANPICS = ['''
+ 
+     +---+
+     |   |
+         |
+         |
+         |
+         |
+   =========''', '''
+ 
+    +---+
+    |   |
+    O   |
+        |
+        |
+        |
+  =========''', '''
+ 
+    +---+
+    |   |
+    O   |
+    |   |
+        |
+        |
+  =========''', '''
+ 
+    +---+
+    |   |
+    O   |
+   /|   |
+        |
+        |
+  =========''', '''
+ 
+    +---+
+    |   |
+    O   |
+   /|\  |
+        |
+        |
+  =========''', '''
+ 
+    +---+
+    |   |
+    O   |
+   /|\  |
+   /    |
+        |
+  =========''', '''
+ 
+    +---+
+    |   |
+    O   |
+   /|\  |
+   / \  |
+        |
+  =========''']
+
+hangman(len(HANGMANPICS)-1)
