@@ -95,8 +95,7 @@ def get_word_score(word, n):
     word = word.lower()
     score = 0
     for w in word:
-        if w != '*':
-            score += SCRABBLE_LETTER_VALUES[w]
+        score += SCRABBLE_LETTER_VALUES.get(w, 0)
     point = 7 * len(word) - 3 * (n - len(word))
     return score * max(1, point)
 

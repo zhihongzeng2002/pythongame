@@ -3,6 +3,7 @@
 
 import random
 import numpy as np
+import copy
 
 def create_board(size, value=' '):
     board = np.full((size,size), value)
@@ -90,16 +91,38 @@ def get_player_move(board, letter):
     available_move = get_available_move(board)
     move = (-1, -1)
     while move not in available_move:
-        ans = input('What is your next move ? (row (0-{}), column(0-{})) '.format(height, width))
+        ans = input('What is your next move ? (row (0-{}), column(0-{})) '.format(height-1, width-1))
         move = ans.split(',')
         move = list(map(int, move))
     make_move(board, letter, move)
 
 def get_random_move(board, letter):
-    print('computer move')
     available_move = get_available_move(board)
     move = random.choice(available_move)
     make_move(board, letter, move)
+
+def get_smart_move(board, letter):
+    available_move = get_available_move(board)
+    win_move = get_win_defense_move(board, letter, available_move, True)
+    if win_move:
+        return True
+    return get_win_defense_move(board, letter, available_move, False)
+
+def get_win_defense_move(board, letter, available_move, win_defense_flag):
+    if win_defense_flag: # win check
+        target = letter
+    else:               # defense check
+        if letter == 'O':
+            target = 'X'
+        else:
+            target = 'O'
+    for move in available_move:
+        board_clone = copy.deepcopy(board)
+        make_move(board_clone, target, move)
+        if game_won(board_clone, target):
+            make_move(board, letter, move)
+            return True
+    return False
 
 def tictactoe():
     print('Welcom to Tic-Tac-Toe!')
@@ -118,7 +141,8 @@ def tictactoe():
                 print('Congratulations. You won the game')
                 return
         else:
-            get_random_move(board, computer)
+            if not get_smart_move(board, computer):
+                get_random_move(board, computer)
             print(board)
             turn = 'player'
             if game_won(board, computer):
