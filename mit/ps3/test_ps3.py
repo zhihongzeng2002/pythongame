@@ -247,6 +247,22 @@ def test_wildcard(word_list):
     if not failure:
         print("SUCCESS: test_wildcard()")
 
+def test_calculate_handlen():
+    data = {
+        'hello': 5,
+        'h*llo': 4
+    }
+    failure = False
+    for k, v in data.items():
+        size = calculate_handlen(get_frequency_dict(k))
+        if  size != v:
+            print('Failure: expected length for {} is {}, but got {}'.format(k, v, size))
+            failure = True
+            break
+    
+    if not failure:
+        print('SUCCESS: test_calculate_handlen()')
+    
 
 
 word_list = load_words()
@@ -262,4 +278,7 @@ test_is_valid_word(word_list)
 print("----------------------------------------------------------------------")
 print("Testing wildcards...")
 test_wildcard(word_list)
+print("----------------------------------------------------------------------")
+print("Testing calculate_handlen...")
+test_calculate_handlen()
 print("All done!")
