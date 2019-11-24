@@ -12,7 +12,7 @@ import random
 import string
 
 VOWELS = 'aeiou'
-CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
+CONSONANTS = 'bcdfghjklmnpqrstvwxyz'  # ''.join(set(string.ascii_lowercase) - set(VOWELS))
 HAND_SIZE = 7
 
 SCRABBLE_LETTER_VALUES = {
@@ -95,8 +95,7 @@ def get_word_score(word, n):
     word = word.lower()
     score = 0
     for w in word:
-        if w != '*':
-            score += SCRABBLE_LETTER_VALUES[w]
+        score += SCRABBLE_LETTER_VALUES.get(w, 0)
     point = 7 * len(word) - 3 * (n - len(word))
     return score * max(1, point)
 
@@ -228,7 +227,11 @@ def calculate_handlen(hand):
     returns: integer
     """
     
-    pass  # TO DO... Remove this line when you implement this function
+    ans = 0
+    for k, v in hand.items():
+        if k != '*':
+            ans += v
+    return ans
 
 def play_hand(hand, word_list):
 
@@ -262,8 +265,7 @@ def play_hand(hand, word_list):
     """
     total = 0
     while hand:
-        print('Current hand:', end=' ')
-        display_hand(hand)
+        print('Current hand:', display_hand(hand))
         word = input('Enter word, or "!!" ot indicate that you are finished: ')
 
         if word == '!!':
