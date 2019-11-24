@@ -51,7 +51,30 @@ def row_won(board, letter):
         if won:
             return True
     return False
+ 
+def column_row_won(board, letter, flag):
+    height, width = board.shape
+    if flag == 'column':
+        list1, list2 = range(width), range(height)
+    else:
+        list1, list2 = range(height), range(width)
 
+    for i in list1:
+        won = True
+        for j in list2:
+            if flag == 'column':
+                v = board[j, i]
+            else:
+                v = board[i, j]
+
+            if v != letter:
+                won = False
+                break
+        if won:
+            return True
+    return False
+    
+       
 def diag_won(board, letter):
     height, width = board.shape
     won = True

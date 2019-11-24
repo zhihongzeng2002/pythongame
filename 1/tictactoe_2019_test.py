@@ -30,6 +30,9 @@ board[2, 0] = 'X'
 print(board)
 ans = column_won(board, 'X')
 assert ans, 'Fail'
+ans = column_row_won(board, 'X', 'column')
+assert ans, 'Fail'
+                     
 
 print('\n-----test row_won\n')
 board = create_board(3)
@@ -41,6 +44,8 @@ board[1, 1] = 'X'
 board[1, 2] = 'X'
 print(board)
 ans = row_won(board, 'X')
+assert ans, 'Fail'
+ans = column_row_won(board, 'X', 'row')
 assert ans, 'Fail'
 
 print('\n-----test diag_won\n')
