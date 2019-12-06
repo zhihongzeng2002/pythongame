@@ -7,7 +7,7 @@ NUM_DIGIT = 3
 MAX_GUESS = 10
 
 def get_random_number(size):
-    nums = list(range(10))
+    nums = list(range(1, 10))
     random.shuffle(nums)
     ans = ''
     for x in nums[:size]:

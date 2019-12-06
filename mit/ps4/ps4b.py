@@ -227,18 +227,14 @@ class CiphertextMessage(Message):
         Returns: a tuple of the best shift value used to decrypt the message
         and the decrypted message text using that shift value
         '''
+            
         max_valid_words = 0
         best_shift = 0
         decrypted_message_text = ''
         self.get_valid_words()
         for shift in range(26):
             text = self.apply_shift(shift)
-            text_list = re.split('[ {}]'.format(string.punctuation), text)
-
-            num_valid_words = 0
-            for w in text_list:
-                if is_word(self.valid_words, w):
-                    num_valid_words += 1
+            num_valid_words = get_num_valid_words(text, self.valid_words)
 
             if max_valid_words < num_valid_words:
                 max_valid_words = num_valid_words
@@ -246,6 +242,16 @@ class CiphertextMessage(Message):
                 decrypted_message_text = text
 
         return (best_shift, decrypted_message_text)
+
+
+def get_num_valid_words(text, valid_words):
+    text_list = re.split('[ {}]'.format(string.punctuation), text)
+    num_valid_words = 0
+    for w in text_list:
+        if is_word(valid_words, w):
+            num_valid_words += 1
+    return num_valid_words
+
 
 
 if __name__ == '__main__':
@@ -260,7 +266,10 @@ if __name__ == '__main__':
    print('Expected Output:', (24, 'hello'))
    print('Actual Output:', ciphertext.decrypt_message())
 
-    #TODO: WRITE YOUR TEST CASES HERE
+    # test to decrypt story text
+   with open('story.txt') as fh:
+        story = fh.read()
 
-    #TODO: best shift value and unencrypted story 
+   cipher_story = CiphertextMessage(story)
+   print('Decrypted story: \n', cipher_story.decrypt_message())
     
