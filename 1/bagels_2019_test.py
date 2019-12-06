@@ -26,7 +26,8 @@ def test_get_clue():
     for (guess, secrete), value in data.items():
         ans = get_clue(guess, secrete)
         if ans != value:
-            print('Failure: get_clue({}, {}) is expected to be {}, but got {}'.format(guess, secrete, value, ans))
+            print('Failure: get_clue({}, {}) is expected to be {}, \
+                but got {}'.format(guess, secrete, value, ans))
             return
     print('--------Success------\n')
 
