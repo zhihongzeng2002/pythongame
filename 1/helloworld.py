@@ -1,8 +1,4 @@
-from __future__ import print_function
-from builtins import input
-
 print('Hello World')
-print('What is your name')
-name = input()
+name = input('What is your name?\n')
 print('It is good to meet you, '+ name)
 
