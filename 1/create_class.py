@@ -43,3 +43,11 @@ class Professor(Person):
 p = Professor('Gates', 10)
 p.hello('Hello')
 
+# exercise
+# create a derived (child) class inherited from Person, named ElementaryStudent
+# def __init__ function for ElementaryStudent to assign self.name, self.age, self.grade, self.school
+#   input arguments: self, name, age, grade, and school
+#   
+# def print_school for ElementaryStudent to print: '{} is at {}'.format(self.name, self.school)
+#   input_arguments: self
+
