@@ -43,3 +43,16 @@ class Professor(Person):
 p = Professor('Gates', 10)
 p.hello('Hello')
 
+class RJGrayStudent(Student):
+
+    def __init__(self, name, age, grade, team):
+        super().__init__(name, age, grade)
+        self.team = team
+
+    def print_team(self):
+        print(self.name + ' is at Team ' + self.team)
+
+z = RJGrayStudent('Adam', 12, 7, 'Blue')
+z.hello('Hello')
+z.print_grade()
+z.print_team()
