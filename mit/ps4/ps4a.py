@@ -64,6 +64,7 @@ if __name__ == '__main__':
    print('Actual Output:', get_permutations(example_input))
 
    data = {
+       '': 0,
        'a': 1,
        'ab': 2,
        'abc': 6,
