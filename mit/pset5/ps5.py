@@ -38,7 +38,7 @@ def process(url):
 
         try:
             pubdate = datetime.strptime(pubdate, "%a, %d %b %Y %H:%M:%S %Z")
-            pubdate.replace(tzinfo=pytz.timezone("GMT"))
+            pubdate.replace(tzinfo=pytz.timezone("EST"))
           #  pubdate = pubdate.astimezone(pytz.timezone('EST'))
           #  pubdate.replace(tzinfo=None)
         except ValueError:
@@ -148,9 +148,9 @@ class DescriptionTrigger(PhraseTrigger):
 #        Input: Time has to be in EST and in the format of "%d %b %Y %H:%M:%S".
 #        Convert time from string to a datetime before saving it as an attribute.
 class TimeTrigger(Trigger):
-    def __init__(self，pubdate):
+    def __init__(self, pubdate):
         pubdate = datetime.strptime(pubdate, "%d %b %Y %H:%M:%S")
-        pubdate = pubdate.astimezone(pytz.timezone('EST'))
+        pubdate = pubdate.replace(tzinfo=pytz.timezone("EST"))
         self.pubdate = pubdate
 
 
@@ -158,18 +158,48 @@ class TimeTrigger(Trigger):
 # TODO: BeforeTrigger and AfterTrigger
 class BeforeTrigger(TimeTrigger):
     def __init__(self, pubdate):
-        pass
+        super().__init__(pubdate)
+
+    def evaluate(self, story):
+        return story.pubdate.replace(tzinfo=None) < self.pubdate.replace(tzinfo=None) 
+
+class AfterTrigger(TimeTrigger):
+    def __init__(self, pubdate):
+        super().__init__(pubdate)
+
+    def evaluate(self, story):
+        return story.pubdate.replace(tzinfo=None) > self.pubdate.replace(tzinfo=None)
 
 # COMPOSITE TRIGGERS
 
 # Problem 7
 # TODO: NotTrigger
+class NotTrigger(object):
+    def __init__(self, trigger):
+        self.trigger = trigger
+
+    def evaluate(self, y):
+        return not self.trigger.evaluate(y)
 
 # Problem 8
 # TODO: AndTrigger
+class AndTrigger(object):
+    def __init__(self, triggerA, triggerB):
+        self.triggerA = triggerA
+        self.triggerB = triggerB
+
+    def evaluate(self, y):
+        return self.triggerA.evaluate(y) and self.triggerB.evaluate(y)
 
 # Problem 9
 # TODO: OrTrigger
+class OrTrigger(object):
+    def __init__(self, triggerA, triggerB):
+        self.triggerA = triggerA
+        self.triggerB = triggerB
+
+    def evaluate(self, y):
+        return self.triggerA.evaluate(y) or self.triggerB.evaluate(y)
 
 
 #======================
@@ -186,7 +216,12 @@ def filter_stories(stories, triggerlist):
     # TODO: Problem 10
     # This is a placeholder
     # (we're just returning all the stories, with no filtering)
-    return stories
+    selection = []
+    for story in stories:
+        for trigger in triggerlist:
+            if trigger.evaluate(story):
+                selection.append(story)
+    return selection
 
 
 
@@ -203,22 +238,45 @@ def read_trigger_config(filename):
     """
     # We give you the code to read in the file and eliminate blank lines and
     # comments. You don't need to know how it works for now!
+    trigger_map = {
+        'TITLE': TitleTrigger,
+        'DESCRIPTION': DescriptionTrigger,
+        'AFTER': AfterTrigger,
+        'BEFORE': BeforeTrigger,
+        'AND': AndTrigger,
+        'OR': OrTrigger,
+        'NOT': NotTrigger
+    }
+
+    trigger_dict = {}
+    trigger_list = []
+
     trigger_file = open(filename, 'r')
     lines = []
     for line in trigger_file:
         line = line.rstrip()
         if not (len(line) == 0 or line.startswith('//')):
             lines.append(line)
+            items = line.split(',')
+            if items[1] in trigger_map:
+                if len(items) == 3:
+                    trigger_dict[items[0]] = trigger_map[items[1]](items[2])
+                else:
+                    trigger_dict[items[0]] = trigger_map[items[1]](items[2], items[3])
+            elif items[0] == 'ADD':
+                for x in items[1:]:
+                    trigger_list.append(trigger_dict[x])
 
     # TODO: Problem 11
     # line is the list of lines that you need to parse and for which you need
     # to build triggers
 
     print(lines) # for now, print it so you see what it contains!
+    return trigger_list
 
 
 
-SLEEPTIME = 120 #seconds -- how often we poll
+SLEEPTIME = 20 #seconds -- how often we poll
 
 def main_thread(master):
     # A sample trigger list - you might need to change the phrases to correspond
@@ -232,7 +290,7 @@ def main_thread(master):
 
         # Problem 11
         # TODO: After implementing read_trigger_config, uncomment this line 
-        # triggerlist = read_trigger_config('triggers.txt')
+        triggerlist = read_trigger_config('triggers.txt')
         
         # HELPER CODE - you don't need to understand this!
         # Draws the popup window that displays the filtered stories

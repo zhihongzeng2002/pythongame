@@ -245,6 +245,9 @@ class ProblemSet5(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    trigger_list = read_trigger_config('triggers.txt')
+    print(trigger_list)
+
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ProblemSet5NewsStory))
     suite.addTest(unittest.makeSuite(ProblemSet5))
