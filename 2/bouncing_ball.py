@@ -1,4 +1,4 @@
-import sys, pygame, time
+import pygame, time
 from pygame.locals import QUIT
 
 delay = 0.01
@@ -19,7 +19,7 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
-                sys.exit()
+                return
 
         ballrect = ballrect.move(speed)
         if ballrect.left < 0 or ballrect.right > width:
@@ -34,3 +34,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
