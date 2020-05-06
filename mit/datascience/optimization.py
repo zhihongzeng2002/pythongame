@@ -27,8 +27,8 @@ def optimal_score_dynamicprograming(toConsider, avail, score, memo):
         return (score, toConsider)
     else:
         nextItem = toConsider[0]
-        withVal, withToTake = lookup_update(toConsider[1:], avail, score, memo)
-        withoutVal, withoutToTake = lookup_update(toConsider[1:], avail-10, score-nextItem)
+        withVal, withToTake = lookup_update(toConsider[1:], avail, score, memo, optimal_score_dynamicprograming)
+        withoutVal, withoutToTake = lookup_update(toConsider[1:], avail-10, score-nextItem, memo, optimal_score_dynamicprograming)
 
         if withVal >= withoutVal:
             return (withVal, withToTake + [nextItem])
