@@ -1,3 +1,5 @@
+import copy
+
 class Node(object):
     def __init__(self, name, children=[]):
         self.name = name
@@ -35,6 +37,47 @@ def print_graph(nodes):
         v.print_children()
         print()
 
+def DFS(node, destination, path, shortest):
+    path.append(node.name)
+    print(path)
+    if node.name == destination:
+        if not shortest[0] or len(path) < len(shortest[0]):
+            shortest[0] = copy.deepcopy(path)
+            print(shortest)
+
+    else:
+        for child in node.children:
+            if child.name not in path:
+                DFS(child, destination, path, shortest)
+    path.pop()
+
+
+def BFS(root_node, destination):
+    queue = [root_node]
+    parent_list = {}
+    parent_list[root_node.name] = None
+
+    while queue:
+        node = queue.pop(0)
+        print(node.name)
+        if node.name == destination:
+            path = []
+            curr = node
+            print(parent_list.keys())
+            
+            while curr.name != root_node.name:
+                path.append(curr.name) 
+                curr = parent_list[curr.name]
+            path.reverse()
+            return [root_node.name] + path        
+        
+        for child in node.children:
+            if child.name not in parent_list:
+                parent_list[child.name] = node
+                queue.append(child)
+
+    return []
+
 
 data = {
     'boston': ['providence', 'new york'],
@@ -45,7 +88,19 @@ data = {
     'phoenix': [],
     'los angles': ['boston']
 }
-n = build_graph(data)
-print_graph(n)
+nodes = build_graph(data)
+print_graph(nodes)
+
+print('\nDFS')
+shortest = [[]]
+DFS(nodes['boston'], 'phoenix', [], shortest)
+print(shortest[0])
+
+print('\nBFS')
+shortest = BFS(nodes['boston'], 'phoenix')
+print(shortest)
+
+
+
 
 
