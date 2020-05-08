@@ -49,7 +49,7 @@ def formulize_items(params):
             items.append((-F+p)*weight)
     return items
 
-params = [100, 10, 20, 30, 40, 50]
+params = [30, 10, 60, 25, 20, 50]
 items = formulize_items(params)
 
 score = params[0] * 60 
