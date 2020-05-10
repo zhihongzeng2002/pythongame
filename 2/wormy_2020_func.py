@@ -157,14 +157,14 @@ def runGame(DISPLAYSURF, FPSCLOCK):
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN:
-                if (event.key == K_LEFT) and worm.direction != RIGHT:
-                    worm.direction = LEFT
-                elif (event.key == K_RIGHT) and worm.direction != LEFT:
-                    worm.direction = RIGHT
-                elif (event.key == K_UP) and worm.direction != DOWN:
-                    worm.direction = UP
-                elif (event.key == K_DOWN) and worm.direction != UP:
-                    worm.direction = DOWN
+                if event.key == K_LEFT:
+                    worm.change_direction(LEFT)
+                elif event.key == K_RIGHT:
+                    worm.change_direction(RIGHT)
+                elif event.key == K_UP:
+                    worm.change_direction(UP)
+                elif event.key == K_DOWN:
+                    worm.change_direction(DOWN)
 
         worm.update()
 
@@ -221,7 +221,8 @@ class Apple_sub(Apple):
         return False
 
 class Worm(object):
-    def __init__(self, cell_width, cell_height, cell_size, color_outside=DARKGREEN, color_inside=GREEN):
+    def __init__(self, cell_width, cell_height, cell_size, \
+                 color_outside=DARKGREEN, color_inside=GREEN):
         self.cell_width = cell_width
         self.cell_height = cell_height
         self.cell_size = cell_size
@@ -245,6 +246,11 @@ class Worm(object):
             wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, \
                                         self.cell_size - 8, self.cell_size - 8)
             pygame.draw.rect(DISPLAYSURF, self.color_inside, wormInnerSegmentRect)
+
+    def change_direction(self, direction):
+        if (direction in [UP, DOWN] and self.direction in [LEFT, RIGHT]) \
+           or (direction in [LEFT, RIGHT] and self.direction in [UP, DOWN]):
+            self.direction = direction
 
     def update(self):
         if self.direction == UP:
@@ -277,15 +283,10 @@ class Worm(object):
         else:
             return False
 
-    def change_direction(self, direction):
-        if (direction in [UP, DOWN] and self.direction in [LEFT, RIGHT]) or (direction in [LEFT, RIGHT] and self.direction in [UP, DOWN]):
-            self.direction = direction
-            return True
-        return False
-
 
 class Worm_sub(Worm):
-    def __init__(self, cell_width, cell_height, cell_size, color_outside, color_inside, slack, random_position=False):
+    def __init__(self, cell_width, cell_height, cell_size, color_outside, color_inside, \
+                 slack, random_position=False):
         super().__init__(cell_width, cell_height, cell_size, color_outside, color_inside)
         self.slack = slack
         if not random_position:
@@ -328,7 +329,6 @@ class Worm_sub(Worm):
 
     def update_eat_apple(self, apples):
         self.update()
-        # check if worm has eaten an apply
         apple_bite = False
         for i in range(len(apples)-1, -1, -1):
             apple = apples[i]
@@ -337,7 +337,7 @@ class Worm_sub(Worm):
                 apple_bite = True
                 break
         if apple_bite==False:
-            self.remove_tail() # remove worm's tail segment
+            self.remove_tail() 
 
     def inside_camera(self, camera):
         for Coord in self.Coords:
@@ -387,28 +387,25 @@ def showGameOverScreen(DISPLAYSURF):
                 return
 
 def runGame_multi_apple(DISPLAYSURF, FPSCLOCK, num_apple):
-    # Set a random start point.
     worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
-    # Start the apple in a random place.
-    
     apples = [Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE) for i in range(num_apple)]
 
     while True: # main game loop
-        # if worm.hit_edge() or worm.hit_self():
-        #     return
+        if worm.hit_edge() or worm.hit_self(): 
+            return
 
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN:
-                if (event.key == K_LEFT) and worm.direction != RIGHT:
-                    worm.direction = LEFT
-                elif (event.key == K_RIGHT) and worm.direction != LEFT:
-                    worm.direction = RIGHT
-                elif (event.key == K_UP) and worm.direction != DOWN:
-                    worm.direction = UP
-                elif (event.key == K_DOWN) and worm.direction != UP:
-                    worm.direction = DOWN
+                if event.key == K_LEFT:
+                    worm.change_direction(LEFT)
+                elif event.key == K_RIGHT:
+                    worm.change_direction(RIGHT)
+                elif event.key == K_UP:
+                    worm.change_direction(UP)
+                elif event.key == K_DOWN:
+                    worm.change_direction(DOWN)
 
         worm.update()
 
@@ -420,8 +417,8 @@ def runGame_multi_apple(DISPLAYSURF, FPSCLOCK, num_apple):
                 del apples[i]
                 apple_bite = True
                 break
-        if apple_bite==False:
-            worm.remove_tail() # remove worm's tail segment
+        if not apple_bite:
+            worm.remove_tail() 
 
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid(DISPLAYSURF)
@@ -435,33 +432,19 @@ def runGame_multi_apple(DISPLAYSURF, FPSCLOCK, num_apple):
         FPSCLOCK.tick(FPS)
 
 def runGame_camera_move(DISPLAYSURF, FPSCLOCK, num_apple):
-    # Set a random start point.
     slack = 8
     worm = Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKGREEN, GREEN, slack)
-    
     apples = [Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE) for _ in range(num_apple)]
-
-    window = {
-        'left': -CELLWIDTH,
-        'right': 2 * CELLWIDTH,
-        'bottom': -CELLWIDTH,
-        'top': 2 * CELLHEIGHT
-    }
-    camera = {
-        'left': 0,
-        'right': CELLWIDTH,
-        'bottom': 0,
-        'top': CELLHEIGHT
-    }
-
+    window = {'left': -CELLWIDTH, 'right': 2 * CELLWIDTH,\
+              'bottom': -CELLWIDTH, 'top': 2 * CELLHEIGHT }
+    camera = {'left': 0, 'right': CELLWIDTH, \
+              'bottom': 0, 'top': CELLHEIGHT }
 
     while True: # main game loop
         adjust_x, adjust_y = 0, 0
-
         for i in range(len(apples)-1, -1, -1):
             if apples[i].is_outside(window):
                 del apples[i]
-
         while len(apples) < num_apple:
             apple = Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE)
             if not apple.inside_camera(camera):
@@ -500,22 +483,12 @@ def runGame_camera_move_multipe_apple_worm(DISPLAYSURF, FPSCLOCK, num_apple):
     count = 0
     worm = Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKGREEN, GREEN, slack)
     enemy_worms = [Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKYELLOW, YELLOW, slack, True) for _ in range(num_worm)]    
-    
     apples = [Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE) for _ in range(num_apple)]
 
-    window = {
-        'left': -CELLWIDTH,
-        'right': 2 * CELLWIDTH,
-        'bottom': -CELLWIDTH,
-        'top': 2 * CELLHEIGHT
-    }
-    camera = {
-        'left': 0,
-        'right': CELLWIDTH,
-        'bottom': 0,
-        'top': CELLHEIGHT
-    }
-
+    window = {'left': -CELLWIDTH, 'right': 2 * CELLWIDTH,\
+              'bottom': -CELLWIDTH, 'top': 2 * CELLHEIGHT }
+    camera = {'left': 0, 'right': CELLWIDTH, \
+              'bottom': 0, 'top': CELLHEIGHT }
 
     while True: # main game loop
         count += 1
@@ -524,7 +497,6 @@ def runGame_camera_move_multipe_apple_worm(DISPLAYSURF, FPSCLOCK, num_apple):
         for i in range(len(apples)-1, -1, -1):
             if apples[i].is_outside(window):
                 del apples[i]
-
         while len(apples) < num_apple:
             apple = Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE)
             if not apple.inside_camera(camera):
@@ -533,7 +505,6 @@ def runGame_camera_move_multipe_apple_worm(DISPLAYSURF, FPSCLOCK, num_apple):
         for i in range(len(enemy_worms)-1, -1, -1):
             if enemy_worms[i].is_outside(window):
                 del enemy_worms[i]
-
         while len(enemy_worms) < num_worm:
             w = Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKYELLOW, YELLOW, slack, True)
             if not w.inside_camera(camera):
@@ -563,7 +534,6 @@ def runGame_camera_move_multipe_apple_worm(DISPLAYSURF, FPSCLOCK, num_apple):
         for w in enemy_worms:
             if worm.hit(w):
                 return
-
             if not count % 10:
                 w.change_direction(random.choice([LEFT, RIGHT, UP, DOWN]))
             w.update_remove_tail()

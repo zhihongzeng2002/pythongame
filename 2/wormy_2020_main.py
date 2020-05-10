@@ -19,9 +19,10 @@ def main():
 ##    showGameOverScreen_base(DISPLAYSURF)
 
     while True:
-        # runGame(DISPLAYSURF, FPSCLOCK)
-        # runGame_multi_apple(DISPLAYSURF, FPSCLOCK, 10)
-        runGame_camera_move(DISPLAYSURF, FPSCLOCK, 100)
+##        runGame(DISPLAYSURF, FPSCLOCK)
+##        runGame_multi_apple(DISPLAYSURF, FPSCLOCK, 10)
+##        runGame_camera_move(DISPLAYSURF, FPSCLOCK, 100)
+        runGame_camera_move_multipe_apple_worm(DISPLAYSURF, FPSCLOCK, 100)
         showGameOverScreen(DISPLAYSURF)
 
 
