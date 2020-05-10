@@ -200,9 +200,6 @@ class Apple(object):
                       'y': random.randint(0, self.cell_height - 1)}
 
 class Apple_sub(Apple):
-    # def __init__(self, cell_width, cell_height, cell_size):
-    #     super().__init__(cell_width, cell_height, cell_size)
-
     def update(self):
         self.Coord = {'x': random.randint(-self.cell_width, 2 * self.cell_width - 1), \
                       'y': random.randint(-self.cell_height, 2* self.cell_height - 1)}
@@ -280,6 +277,13 @@ class Worm(object):
         else:
             return False
 
+    def change_direction(self, direction):
+        if (direction in [UP, DOWN] and self.direction in [LEFT, RIGHT]) or (direction in [LEFT, RIGHT] and self.direction in [UP, DOWN]):
+            self.direction = direction
+            return True
+        return False
+
+
 class Worm_sub(Worm):
     def __init__(self, cell_width, cell_height, cell_size, color_outside, color_inside, slack, random_position=False):
         super().__init__(cell_width, cell_height, cell_size, color_outside, color_inside)
@@ -349,7 +353,10 @@ class Worm_sub(Worm):
                     return True
         return False
 
-
+    def change_direction_update_eat_apple_calc_adjust(self, direction, apples):
+        self.change_direction(direction)
+        self.update_eat_apple(apples)
+        return self.calc_adjust_coord()
 
 def showGameOverScreen_base(DISPLAYSURF):
     gameOverFont = pygame.font.Font('freesansbold.ttf', 100)
@@ -378,31 +385,6 @@ def showGameOverScreen(DISPLAYSURF):
                 terminate()
             elif event.type == KEYUP:
                 return
-
-def generate_delt(size):
-    if random.randint(0, 1):
-        delt = size
-    else:
-        delt = -size
-    return delt
-        
-def create_worm_OffCameraPos():
-    worm = Worm(CELLWIDTH, CELLWIDTH, CELLSIZE)
-    for i in range(worm.Coords):
-        worm.Coords[i] = {
-            'x': worm.Coords[i]['x'] + generate_delt(CELLWIDTH),
-            'y': worm.Coords[i]['y'] + generate_delt(CELLHEIGHT)
-        }
-    worm.direction = random.choice([RIGHT, LEFT, UP, DOWN])
-    return worm
-
-def create_apple_OffCameraPos():
-    apple = Apple(CELLWIDTH, CELLWIDTH, CELLSIZE)
-    apple.Coord = {
-        'x': apple.Coord['x'] + generate_delt(CELLWIDTH),
-        'y': apple.Coord['y'] + generate_delt(CELLWIDTH)
-    }
-    return apple
 
 def runGame_multi_apple(DISPLAYSURF, FPSCLOCK, num_apple):
     # Set a random start point.
@@ -455,7 +437,66 @@ def runGame_multi_apple(DISPLAYSURF, FPSCLOCK, num_apple):
 def runGame_camera_move(DISPLAYSURF, FPSCLOCK, num_apple):
     # Set a random start point.
     slack = 8
-    num_worm = 40
+    worm = Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKGREEN, GREEN, slack)
+    
+    apples = [Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE) for _ in range(num_apple)]
+
+    window = {
+        'left': -CELLWIDTH,
+        'right': 2 * CELLWIDTH,
+        'bottom': -CELLWIDTH,
+        'top': 2 * CELLHEIGHT
+    }
+    camera = {
+        'left': 0,
+        'right': CELLWIDTH,
+        'bottom': 0,
+        'top': CELLHEIGHT
+    }
+
+
+    while True: # main game loop
+        adjust_x, adjust_y = 0, 0
+
+        for i in range(len(apples)-1, -1, -1):
+            if apples[i].is_outside(window):
+                del apples[i]
+
+        while len(apples) < num_apple:
+            apple = Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+            if not apple.inside_camera(camera):
+                apples.append(apple)
+
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    adjust_x, adjust_y = worm.change_direction_update_eat_apple_calc_adjust(LEFT, apples)
+                elif event.key == K_RIGHT:
+                    adjust_x, adjust_y = worm.change_direction_update_eat_apple_calc_adjust(RIGHT, apples)
+                elif event.key == K_UP:
+                    adjust_x, adjust_y = worm.change_direction_update_eat_apple_calc_adjust(UP, apples)
+                elif event.key == K_DOWN:
+                    adjust_x, adjust_y = worm.change_direction_update_eat_apple_calc_adjust(DOWN, apples)
+
+        DISPLAYSURF.fill(BGCOLOR)
+        drawGrid(DISPLAYSURF)
+        worm.draw(DISPLAYSURF)
+
+        for apple in apples:
+            apple.adjust_coord(adjust_x, adjust_y)
+            apple.draw(DISPLAYSURF)
+
+        drawScore(len(worm.Coords) - 3, DISPLAYSURF)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+
+def runGame_camera_move_multipe_apple_worm(DISPLAYSURF, FPSCLOCK, num_apple):
+    # Set a random start point.
+    slack = 8
+    num_worm = 20
     count = 0
     worm = Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKGREEN, GREEN, slack)
     enemy_worms = [Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKYELLOW, YELLOW, slack, True) for _ in range(num_worm)]    
@@ -502,22 +543,14 @@ def runGame_camera_move(DISPLAYSURF, FPSCLOCK, num_apple):
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN:
-                if (event.key == K_LEFT) and worm.direction != RIGHT:
-                    worm.direction = LEFT
-                    worm.update_eat_apple(apples)
-                    adjust_x, adjust_y = worm.calc_adjust_coord()
-                elif (event.key == K_RIGHT) and worm.direction != LEFT:
-                    worm.direction = RIGHT
-                    worm.update_eat_apple(apples)
-                    adjust_x, adjust_y = worm.calc_adjust_coord()
-                elif (event.key == K_UP) and worm.direction != DOWN:
-                    worm.direction = UP
-                    worm.update_eat_apple(apples)
-                    adjust_x, adjust_y = worm.calc_adjust_coord()
-                elif (event.key == K_DOWN) and worm.direction != UP:
-                    worm.direction = DOWN
-                    worm.update_eat_apple(apples)
-                    adjust_x, adjust_y = worm.calc_adjust_coord()
+                if event.key == K_LEFT:
+                    adjust_x, adjust_y = worm.change_direction_update_eat_apple_calc_adjust(LEFT, apples)
+                elif event.key == K_RIGHT:
+                    adjust_x, adjust_y = worm.change_direction_update_eat_apple_calc_adjust(RIGHT, apples)
+                elif event.key == K_UP:
+                    adjust_x, adjust_y = worm.change_direction_update_eat_apple_calc_adjust(UP, apples)
+                elif event.key == K_DOWN:
+                    adjust_x, adjust_y = worm.change_direction_update_eat_apple_calc_adjust(DOWN, apples)
 
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid(DISPLAYSURF)
@@ -532,7 +565,7 @@ def runGame_camera_move(DISPLAYSURF, FPSCLOCK, num_apple):
                 return
 
             if not count % 10:
-                w.direction = random.choice([LEFT, RIGHT, UP, DOWN])
+                w.change_direction(random.choice([LEFT, RIGHT, UP, DOWN]))
             w.update_remove_tail()
             w.adjust_coord(adjust_x, adjust_y)
             w.draw(DISPLAYSURF)
@@ -540,4 +573,3 @@ def runGame_camera_move(DISPLAYSURF, FPSCLOCK, num_apple):
         drawScore(len(worm.Coords) - 3, DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
