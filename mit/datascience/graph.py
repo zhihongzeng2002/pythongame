@@ -15,7 +15,7 @@ class Node(object):
 def build_graph(info_dict):
     # build nodes
     nodes = {}
-    for k in info_dict:
+    for k in info_dict.keys():
         nodes[k] = Node(k)
 
     # build edges
@@ -96,9 +96,9 @@ shortest = [[]]
 DFS(nodes['boston'], 'phoenix', [], shortest)
 print(shortest[0])
 
-print('\nBFS')
-shortest = BFS(nodes['boston'], 'phoenix')
-print(shortest)
+# print('\nBFS')
+# shortest = BFS(nodes['boston'], 'phoenix')
+# print(shortest)
 
 
 

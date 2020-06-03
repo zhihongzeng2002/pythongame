@@ -169,9 +169,13 @@ def runGame(DISPLAYSURF, FPSCLOCK):
         worm.update()
 
         # check if worm has eaten an apply
-        if worm.Coords[HEAD] == apple.Coord:
-            apple.update()
-        else:
+        eat_apple = False
+        for coord in worm.Coords:
+            if coord == apple.Coord:
+                apple.update()
+                eat_apple = True
+                break
+        if not eat_apple:
             worm.remove_tail() # remove worm's tail segment
 
         DISPLAYSURF.fill(BGCOLOR)
@@ -271,8 +275,8 @@ class Worm(object):
         self.remove_tail()
 
     def hit_edge(self):
-        if self.Coords[HEAD]['x'] == -1 or self.Coords[HEAD]['x'] == self.cell_width \
-            or self.Coords[HEAD]['y'] == -1 or self.Coords[HEAD]['y'] == self.cell_height:
+        if self.Coords[HEAD]['x'] <= -1 or self.Coords[HEAD]['x'] >= self.cell_width \
+            or self.Coords[HEAD]['y'] <= -1 or self.Coords[HEAD]['y'] >= self.cell_height:
             return True
         else:
             return False
@@ -543,3 +547,4 @@ def runGame_camera_move_multipe_apple_worm(DISPLAYSURF, FPSCLOCK, num_apple):
         drawScore(len(worm.Coords) - 3, DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+
