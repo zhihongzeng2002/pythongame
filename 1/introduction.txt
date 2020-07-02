@@ -6,9 +6,9 @@ Time: 3:45pm - 4:45pm
 
 Class Description:
 
-Playing video game is one of the most entertaining activities for kids and teenages, even adults. Curiosity of how a game is implemented and doing it yourself (DIY) provide a fascinating learning opportunity.
+Playing video games is one of the most entertaining activities for kids, teenages, and even adults. Curiosity of how a game is created and doing it yourself (DIY) provide a fascinating learning opportunity.
 
-1) In the fall semester class, students are going to learn basics of Python (e.g., expressions, data types, variables, lists, dictionaries, flow control, functions and class) and explore python games by writing/debugging/playing small text-based games. The list of games include but not limited as:
+1) In the fall semester class, students are going to learn basics of Python (e.g., expressions, data types, variables, lists, dictionaries, flow control, functions and class) and explore python games by writing/debugging/playing small text-based games. The list of games include but are not limited to:
 
 Guess the number
 Jokes
@@ -18,7 +18,7 @@ Tic Tac Toe
 Bagels
 Reversi ...
 
-2) In the spring semester class, students are going to make graphical games with the Pygame framework. They will learn some advanced programming skills, such as drawing, event handling, game window and camera view. The list of games include:
+2) In the spring semester class, students are going to make graphical games with the Pygame framework. They will learn some advanced programming skills, such as drawing, event handling, game windows and camera views. The list of games include:
 
 Boucing Ball
 Memory puzzle
@@ -28,17 +28,17 @@ Wormy game which evolves from a simple game to a complex game, i.e.,
     c) multiple-apple single-worm with unbounded world
     d) multiple-apple multiple-worm with unbounded world
 
-The most valuable thing that the students are going to learn is logic thinking and problem solving: 
-    a) build base game with class, function and module
-    b) increase complexity step by step
-    c) continue testing 
+The most valuable things that the students will learn are logic thinking and problem solving skills by: 
+    a) building a base game with classes, functions and modules
+    b) increasing the complexity step by step
+    c) continuously testing 
 
 
 
-Basic knowledge of computer and programming (e.g., scratch) will be helpful but not necessary. Bringing your laptop and curiosity to the class is required. 
+Basic knowledge of computer and programming (e.g., Scratch) will be helpful but not necessary. Bringing your laptop and curiosity to the class is required. 
 
 Class Instructor: Zhihong Zeng and Andrew Zeng
 
-Zhihong Zeng is a professional programmer and technique evangelist. He is the Lead Data Scienties in Iron Mountain, and has been programming various applications by using cutting-edge techniques (e.g., computer vision, Natural Language Processing) for many years. His linkedin page is at https://www.linkedin.com/in/zhihong-john-zeng-13154b7/
+Zhihong Zeng is a professional programmer and technique evangelist. He is the Lead Data Scienties in Iron Mountain, and has been programming various applications by using cutting-edge techniques (e.g., computer vision, natural language processing) for many years. His linkedin page is at https://www.linkedin.com/in/zhihong-john-zeng-13154b7/
 
-Andrew Zeng, a student in Minuteman Techical School, has an intense interest of playing video games and inventing computer games. He started programming from 7 years old, has already explored programming with scratch, python, javascript, and C++. Andrew has made some games with python.
+Andrew Zeng, a student in Minuteman Techical School, has an intense interest of playing video games and inventing computer games. He started programming from 7 years old, and has already explored programming with scratch, python, javascript, and C++. Andrew has made some games with python.
