@@ -37,8 +37,10 @@ The most valuable things that the students will learn are logic thinking and pro
 
 Basic knowledge of computer and programming (e.g., Scratch) will be helpful but not necessary. Bringing your laptop and curiosity to the class is required. 
 
-Class Instructor: Zhihong Zeng and Andrew Zeng
+Class Instructors: 
 
-Zhihong Zeng is a professional programmer and technique evangelist. He is the Lead Data Scienties in Iron Mountain, and has been programming various applications by using cutting-edge techniques (e.g., computer vision, natural language processing) for many years. His linkedin page is at https://www.linkedin.com/in/zhihong-john-zeng-13154b7/
+Zhihong Zeng is a technique evangelist and the Lead Data Scientist in Iron Mountain, and has been programming various applications by using cutting-edge techniques (e.g., computer vision, natural language processing) for many years. He was a recipient of ICMI2018 10-year Technical Impact Award. His linkedin page is at https://www.linkedin.com/in/zhihong-john-zeng-13154b7/
 
-Andrew Zeng, a student in Minuteman Techical School, has an intense interest of playing video games and inventing computer games. He started programming from 7 years old, and has already explored programming with scratch, python, javascript, and C++. Andrew has made some games with python.
+Andrew Zeng, a student in Minuteman Regional Vocational Technical High School, has an intense interest of playing video games and inventing computer games. He started programming from 7 years old, and has already explored programming with scratch, python, javascript, and C++. Andrew has made some games with python.
+
+They are also the instructors in "Computational thinking and data science" class in ACLS
