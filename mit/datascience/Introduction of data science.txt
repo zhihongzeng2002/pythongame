@@ -1,6 +1,6 @@
 Class name: Computational Thinking and Data Science
-Class limit: 15 
-Restrictions: High school with the basic python programming skill 
+Class limit: 10 
+Restrictions: High school with python object-oriented programming experience 
 Tuition: $145 
 Time: 2:30pm - 3:30pm Sunday with fall and spring semesters
 
