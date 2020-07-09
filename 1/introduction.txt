@@ -1,5 +1,5 @@
 Class name: Making Games with Python
-Class limit: 15 
+Class limit: 15 students 
 Restrictions: Ages 10 and up
 Tuition: $145 
 Time: 3:45pm - 4:45pm
