@@ -96,9 +96,9 @@ shortest = [[]]
 DFS(nodes['boston'], 'phoenix', [], shortest)
 print(shortest[0])
 
-# print('\nBFS')
-# shortest = BFS(nodes['boston'], 'phoenix')
-# print(shortest)
+print('\nBFS')
+shortest = BFS(nodes['boston'], 'phoenix')
+print(shortest)
 
 
 
