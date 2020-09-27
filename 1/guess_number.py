@@ -4,13 +4,13 @@ import sys
 myName = input('Hello! What is your name?\n')
 
 number = random.randint(1, 20)
-print('Well, ' + myName + ', I am thinking of a number between 1 and 20.')
+print(f'Well, {myName}, I am thinking of a number between 1 and 20.')
 
 for i in range(6):
     guess = int(input('Take a guess. '))
 
     if guess == number:
-        print('Good job, ' + myName + '! You guess my number in ' + str(i+1) + ' guesses!')
+        print('Good job, ' + myName + '! You guess my number!')
         sys.exit(0)
 
     elif guess < number:
