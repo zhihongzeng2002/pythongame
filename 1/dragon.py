@@ -23,11 +23,12 @@ def checkCave(chosenCave):
     else:
         print('Gobbles you down in one bite!')
 
-playAgain = 'yes'
-while playAgain.startswith('y'):
-    displayIntro()
-    caveNumber = chooseCave()
-    checkCave(caveNumber)
-    print()
-    playAgain = input('Do you want to play again? (yes or no)')        
+if __name__ == '__main__':
+    playAgain = 'yes'
+    while playAgain.startswith('y'):
+        displayIntro()
+        caveNumber = chooseCave()
+        checkCave(caveNumber)
+        print()
+        playAgain = input('Do you want to play again? (yes or no)')        
 

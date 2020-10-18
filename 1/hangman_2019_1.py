@@ -5,11 +5,10 @@ def choose_word():
         string -- selected word
     """
     wordlist = 'ant bear cat dog beer'.split()
+    print(wordlist)
     w = random.choice(wordlist)
     return w
 
-print(choose_word())
-print(choose_word())
 
 def is_word_guessed(secrete_word, letters_guessed):
     """check whether all of letters of secrete word have been guessed    
@@ -25,8 +24,6 @@ def is_word_guessed(secrete_word, letters_guessed):
             return False
     return True
 
-print(is_word_guessed('banana', 'abn'))
-print(is_word_guessed('bead', 'earb'))
 
 def get_guessed_word(secrete_word, letter_guessed):
     """Get the word with guessed letters
@@ -46,7 +43,6 @@ def get_guessed_word(secrete_word, letter_guessed):
 
     return word
 
-print(get_guessed_word('hangman', 'hamg'))
 
 def guess_loop(secrete_word, max_guess):    
     """loop when the remaining guess is larger than zero:
@@ -78,8 +74,6 @@ def guess_loop(secrete_word, max_guess):
 
     print('Sorry, you ran out of guesses. The word was {}\n'.format(secrete_word))
 
-guess_loop('bear', 3)
-
 
 def hangman(max_guess):
     secrete_word = choose_word()
@@ -90,4 +84,5 @@ def hangman(max_guess):
     
     guess_loop(secrete_word, max_guess)
 
-hangman(4)
+if __name__ == '__main__':
+    hangman(4)
