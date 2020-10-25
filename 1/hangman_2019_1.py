@@ -63,13 +63,19 @@ def guess_loop(secrete_word, max_guess):
         letter = input('Please guess a letter: ')
         letter = letter.lower()
         if letter in secrete_word:
-            guessed += letter
-            print('Good guess: {}'.format(get_guessed_word(secrete_word, guessed)))
-            if is_word_guessed(secrete_word, guessed):
-                print('Congratulations, You won!\n')
-                return
+            if letter in guessed:
+                print('That letter has already been guessed')
+                continue
+            else:
+                guessed += letter
+                guessed_word = get_guessed_word(secrete_word, guessed)
+                print(f'Good guess: {guessed_word}')
+                if is_word_guessed(secrete_word, guessed):
+                    print('Congratulations, You won!\n')
+                    return
         else:
-            print('Oops! That letter is not in my word: {}'.format(get_guessed_word(secrete_word, guessed)))
+            guessed_word = get_guessed_word(secrete_word, guessed)            
+            print(f'Oops! That letter is not in my word: {guessed_word}')
             remaining_guess -= 1
 
     print('Sorry, you ran out of guesses. The word was {}\n'.format(secrete_word))
@@ -78,9 +84,9 @@ def guess_loop(secrete_word, max_guess):
 def hangman(max_guess):
     secrete_word = choose_word()
 
-    print('''Welcome to the game Hangman!
-    I am thinking of a word that is {} letters long.
-    '''.format(len(secrete_word)))
+    print(f'''Welcome to the game Hangman! 
+    I am thinking of a word that is {len(secrete_word)} letters long.
+    ''')
     
     guess_loop(secrete_word, max_guess)
 
