@@ -46,12 +46,11 @@ def get_guessed_word(secrete_word, letter_guessed):
 
 def guess_loop(secrete_word, max_guess):    
     """loop when the remaining guess is larger than zero:
-            1) the user inputs a letter.
-            2) If the letter is not in the secrete word, remaining guess descreases and continue
+        1) the user inputs a letter.
+        2) If the letter is not in the secrete word, remaining guess descreases and continue
                Otherwise the letter is added guessed_letter. 
                 If the all letters of the secrete word, the game is over and user won
-            3) when the remaining guess is zero, exit the loop
-        4) the game is over and user lost
+        3) when the remaining guess is zero, exit the loop, and the user lost
     Arguments:
         secrete_word {string} -- secrete word
         max_guess {integer} -- maximum of guesses
@@ -59,7 +58,7 @@ def guess_loop(secrete_word, max_guess):
     remaining_guess = max_guess
     guessed = ''
     while remaining_guess > 0:
-        print('You have {} guesses left'.format(remaining_guess))
+        print(f'You have {remaining_guess} guesses left')
         letter = input('Please guess a letter: ')
         letter = letter.lower()
         if letter in secrete_word:
