@@ -1,6 +1,6 @@
 import random
 
-from hangman_pictures import HANGMANPICS
+from hangman_pictures import HANGMANPICS  ###
 
 def choose_word():
     wordlist = 'ant bear cat dog beer'.split()
@@ -70,10 +70,10 @@ def guess_loop_2(secrete_word, pictures):  ###
             max_guess -= 1
 
     print(pictures[-1]) ###
-    print(f'Sorry, you ran out of guesses. My secrete word is {secrete_word}')
+    print(f'Sorry, you ran out of guesses. My secrete word is {secrete_word}') ###
 
 
-def hangman(max_guess): ###
+def hangman(max_guess): 
     secrete_word = choose_word()
     print("Welcome the game")
     guess_loop(secrete_word, max_guess)
@@ -81,11 +81,11 @@ def hangman(max_guess): ###
 def hangman_2(pictures):  ###
     secrete_word = choose_word()
     print("Welcome the game")
-    guess_loop_2(secrete_word, pictures)
+    guess_loop_2(secrete_word, pictures) ###
 
 
 if __name__ == '__main__':
-#    hangman(num_pics)
+#    hangman(num_pics) ###
     hangman_2(HANGMANPICS)  ###
 
 
