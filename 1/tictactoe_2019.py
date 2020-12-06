@@ -164,8 +164,8 @@ def tictactoe():
                 print('Congratulations. You won the game')
                 return
         else:
-            if not get_smart_move(board, computer):
-                get_random_move(board, computer)
+            #if not get_smart_move(board, computer):
+            get_random_move(board, computer)
             print(board)
             turn = 'player'
             if game_won(board, computer):
