@@ -116,12 +116,28 @@ def get_player_move(board, letter):
     while move not in available_move:
         ans = input('What is your next move ? (row (0-{}), column(0-{})) '.format(height-1, width-1))
         move = ans.split(',')
-        move = list(map(int, move))
+        move = [int(move[0]), int(move[1])]
+##        move = list(map(int, move))
     make_move(board, letter, move)
 
 def get_random_move(board, letter):
     available_move = get_available_move(board)
     move = random.choice(available_move)
+    make_move(board, letter, move)
+
+def get_prefered_random_move(board, letter):
+    available_move = get_available_move(board)
+    height, width = board.shape
+    prefered_move = [[int(height/2), int(width/2)], [0, 0], \
+                     [0, width-1], [height-1, 0], [height-1, width-1]]
+    print(available_move)
+    move = None
+    for p in prefered_move:
+        if p in available_move:
+            move = p
+            break
+    if move is None:
+        move = random.choice(available_move)
     make_move(board, letter, move)
 
 def get_smart_move(board, letter):
@@ -172,9 +188,35 @@ def tictactoe():
                 print('The computer won the game')
                 return
     print('The game is a tie')
+
+def tictactoe_smart():
+    print('Welcom to Tic-Tac-Toe!')
+    player, computer = input_player_selection()
+    print('You are {}, and computer is {}'.format(player, computer))
+    first = who_go_first()
+    print('{} go first'.format(first))
+    board = create_board(3)
+    turn = first
+    while get_available_move(board):
+        if turn == 'player':
+            get_player_move(board, player)
+            print(board)
+            turn = 'computer'
+            if game_won(board, player):
+                print('Congratulations. You won the game')
+                return
+        else:
+            if not get_smart_move(board, computer):
+                get_prefered_random_move(board, computer)
+            print(board)
+            turn = 'player'
+            if game_won(board, computer):
+                print('The computer won the game')
+                return
+    print('The game is a tie')
         
 if __name__ == '__main__':
-    tictactoe()    
+    tictactoe_smart()    
     
 
 
