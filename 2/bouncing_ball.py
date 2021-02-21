@@ -12,7 +12,7 @@ def main():
 
     screen = pygame.display.set_mode((width, height))
     pygame.display.set_caption('Bouncing Ball')
-    ball = pygame.image.load('C:\\Users\\zhiho\\dev\\pythongame\\2\\intro_ball.gif')
+    ball = pygame.image.load('intro_ball.gif')
     ballrect = ball.get_rect()
 
     while True:
