@@ -12,8 +12,8 @@ def main():
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     pygame.display.set_caption('Wormy')
 
-    runGame_base(DISPLAYSURF, FPSCLOCK)
-##    runGame_1(DISPLAYSURF, FPSCLOCK)
+    # runGame_base(DISPLAYSURF, FPSCLOCK)
+    runGame_1(DISPLAYSURF, FPSCLOCK)
 ##    runGame_show_apple(DISPLAYSURF, FPSCLOCK)
 ##    runGame_show_worm(DISPLAYSURF, FPSCLOCK)
 ##    showGameOverScreen_base(DISPLAYSURF)
