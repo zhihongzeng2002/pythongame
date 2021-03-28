@@ -123,16 +123,16 @@ def runGame_show_worm(DISPLAYSURF, FPSCLOCK):
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN:
-                if event.key == K_LEFT:
+                if event.key == K_LEFT and worm.direction != RIGHT:
                     worm.direction = LEFT
                     worm.update_remove_tail()
-                elif event.key == K_RIGHT:
+                elif event.key == K_RIGHT and worm.direction != LEFT:
                     worm.direction = RIGHT
                     worm.update_remove_tail()
-                elif event.key == K_UP:
+                elif event.key == K_UP and worm.direction != DOWN:
                     worm.direction = UP
                     worm.update_remove_tail()
-                elif event.key == K_DOWN:
+                elif event.key == K_DOWN and worm.direction != UP:
                     worm.direction = DOWN
                     worm.update_remove_tail()
 
@@ -151,7 +151,7 @@ def runGame(DISPLAYSURF, FPSCLOCK):
 
     while True: # main game loop
         if worm.hit_edge() or worm.hit_self():
-            return
+            terminate()
 
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT:
@@ -359,7 +359,7 @@ class Worm_sub(Worm):
         return self.calc_adjust_coord()
 
 def showGameOverScreen_base(DISPLAYSURF):
-    gameOverFont = pygame.font.Font('freesansbold.ttf', 100)
+    gameOverFont = pygame.font.Font(pygame.font.get_default_font(), 100)
     gameSurf = gameOverFont.render('Game Over', True, WHITE)
     gameRect = gameSurf.get_rect()
     gameRect.midtop = (int(WINDOWWIDTH/2), int(WINDOWHEIGHT/2)-50)
@@ -372,7 +372,7 @@ def showGameOverScreen_base(DISPLAYSURF):
                 terminate()
             
 def showGameOverScreen(DISPLAYSURF):
-    gameOverFont = pygame.font.Font('freesansbold.ttf', 100)
+    gameOverFont = pygame.font.Font(pygame.font.get_default_font(), 100)
     gameSurf = gameOverFont.render('Game Over', True, WHITE)
     gameRect = gameSurf.get_rect()
     gameRect.midtop = (int(WINDOWWIDTH/2), int(WINDOWHEIGHT/2)-50)
