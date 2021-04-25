@@ -15,7 +15,7 @@ def main():
     # runGame_base(DISPLAYSURF, FPSCLOCK)
 
     while True:
-        runGame_apple_worm_update(DISPLAYSURF, FPSCLOCK)
+        runGame_apple_worm_update_multiple_apple(DISPLAYSURF, FPSCLOCK, 5)
         showGameOverScreen(DISPLAYSURF)
 
 

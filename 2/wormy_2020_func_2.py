@@ -424,6 +424,72 @@ def runGame_multi_apple(DISPLAYSURF, FPSCLOCK, num_apple):
         drawGrid(DISPLAYSURF)
         worm.draw(DISPLAYSURF)
 
+        if not apples:
+            return
+            
+        for apple in apples:
+            apple.draw(DISPLAYSURF)
+
+        drawScore(len(worm.Coords) - 3, DISPLAYSURF)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def runGame_multi_apple_worm(DISPLAYSURF, FPSCLOCK, num_apple):
+    worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+    worm_group = [Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKYELLOW, YELLOW) for i in range(num_apple)]
+    apples = [Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE) for i in range(num_apple)]
+
+    for i in range(len(apples)-1, -1, -1):
+        apple = apples[i]
+        for item in worm_group + [worm]:
+            if apple.Coord in item.Coords:
+                del apples[i]
+
+    while True: # main game loop
+        if worm.hit_edge() or worm.hit_self(): 
+            return
+
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    worm.change_direction(LEFT)
+                elif event.key == K_RIGHT:
+                    worm.change_direction(RIGHT)
+                elif event.key == K_UP:
+                    worm.change_direction(UP)
+                elif event.key == K_DOWN:
+                    worm.change_direction(DOWN)
+
+        worm.update()
+
+        # check if worm has eaten an apply
+        apple_bite = False
+        for i in range(len(apples)-1, -1, -1):
+            apple = apples[i]
+            if worm.Coords[HEAD] == apple.Coord:
+                del apples[i]
+                apple_bite = True
+                break
+        if not apple_bite:
+            worm.remove_tail() 
+        else:
+            while True: 
+                new_apple = Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+                for item in worm_group + [worm]:
+                    if new_apple.Coord in item.Coords:
+                        continue
+                break
+            apples.append(new_apple)
+
+        DISPLAYSURF.fill(BGCOLOR)
+        drawGrid(DISPLAYSURF)
+        worm.draw(DISPLAYSURF)
+
+        for w in worm_group:
+            w.draw(DISPLAYSURF)
+
         for apple in apples:
             apple.draw(DISPLAYSURF)
 

@@ -98,6 +98,51 @@ def runGame_apple_worm_update(DISPLAYSURF, FPSCLOCK):
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
+def runGame_apple_worm_update_multiple_apple(DISPLAYSURF, FPSCLOCK, num_apple):
+    score = 0
+    apple_group = [Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE) for i in range(num_apple)]
+    worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+    while True: # main game loop
+        if worm.hit_edge() or worm.hit_self():
+            return
+
+        for event in pygame.event.get(): 
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    worm.change_direction(LEFT)
+                elif event.key == K_RIGHT:
+                    worm.change_direction(RIGHT)
+                elif event.key == K_UP:
+                    worm.change_direction(UP)
+                elif event.key == K_DOWN:
+                    worm.change_direction(DOWN)
+
+        worm.update()
+
+        apple_bite = False
+        for i in range(len(apple_group)-1, -1, -1):
+            item = apple_group[i]
+            if worm.Coords[HEAD] == item.Coord:
+                del apple_group[i]
+                apple_bite = True
+                break
+
+        if not apple_bite:
+            worm.remove_tail()
+
+        DISPLAYSURF.fill(BGCOLOR)
+        drawGrid(DISPLAYSURF)
+        drawScore(len(worm.Coords)-3, DISPLAYSURF)
+
+        for item in apple_group:
+            item.draw(DISPLAYSURF)
+
+        worm.draw(DISPLAYSURF)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
 def showGameOverScreen(displaysurf):
     gameOverFont = pygame.font.Font(pygame.font.get_default_font(), 100)
     gameSurf = gameOverFont.render('Game Over', True, WHITE)
