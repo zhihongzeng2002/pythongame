@@ -358,6 +358,13 @@ class Worm_sub(Worm):
         self.update_eat_apple(apples)
         return self.calc_adjust_coord()
 
+    def change_direction_calc_adjust(self, direction):
+        self.change_direction(direction)
+        self.update()
+        self.remove_tail()
+        return self.calc_adjust_coord()
+
+
 def showGameOverScreen_base(DISPLAYSURF):
     gameOverFont = pygame.font.Font(pygame.font.get_default_font(), 100)
     gameSurf = gameOverFont.render('Game Over', True, WHITE)
@@ -491,6 +498,50 @@ def runGame_multi_apple_worm(DISPLAYSURF, FPSCLOCK, num_apple):
             w.draw(DISPLAYSURF)
 
         for apple in apples:
+            apple.draw(DISPLAYSURF)
+
+        drawScore(len(worm.Coords) - 3, DISPLAYSURF)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def runGame_camera_move_apple(DISPLAYSURF, FPSCLOCK, num_apple):
+    slack = 8
+    worm = Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKGREEN, GREEN, slack)
+    apples = [Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE) for _ in range(num_apple)]
+    window = {'left': -CELLWIDTH, 'right': 2 * CELLWIDTH,\
+              'bottom': -CELLWIDTH, 'top': 2 * CELLHEIGHT }
+    camera = {'left': 0, 'right': CELLWIDTH, \
+              'bottom': 0, 'top': CELLHEIGHT }
+
+    while True: # main game loop
+        adjust_x, adjust_y = 0, 0
+        for i in range(len(apples)-1, -1, -1):
+            if apples[i].is_outside(window):
+                del apples[i]
+        while len(apples) < num_apple:
+            apple = Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+            if not apple.inside_camera(camera):
+                apples.append(apple)
+
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    adjust_x, adjust_y = worm.change_direction_calc_adjust(LEFT)
+                elif event.key == K_RIGHT:
+                    adjust_x, adjust_y = worm.change_direction_calc_adjust(RIGHT)
+                elif event.key == K_UP:
+                    adjust_x, adjust_y = worm.change_direction_calc_adjust(UP)
+                elif event.key == K_DOWN:
+                    adjust_x, adjust_y = worm.change_direction_calc_adjust(DOWN)
+
+        DISPLAYSURF.fill(BGCOLOR)
+        drawGrid(DISPLAYSURF)
+        worm.draw(DISPLAYSURF)
+
+        for apple in apples:
+            apple.adjust_coord(adjust_x, adjust_y)
             apple.draw(DISPLAYSURF)
 
         drawScore(len(worm.Coords) - 3, DISPLAYSURF)

@@ -177,6 +177,67 @@ class Apple(object):
             'y': random.randint(0, self.cell_height - 1)
         }
 
+class Apple_sub(Apple):
+    def update(self):
+        self.Coord = {
+            'x': random.randint(-self.cell_width, 2 * self.cell_width - 1),
+            'y': random.randint(-self.cell_height, 2 * self.cell_height - 1)
+        }
+
+    def is_outside(self, window):
+        if self.Coord['x'] < window['left'] or self.Coord['x'] >= window['right'] \
+            or self.Coord['y'] < window['bottom'] or self.Coord['y'] >= window['top']:
+            return True
+        return False
+
+    def inside_camera(self, camera):
+        if self.Coord['x'] >= camera['left'] and self.Coord['x'] < window['right'] \
+            and self.Coord['y'] >= window['bottom'] and self.Coord['y'] < window['top']:
+            return True
+        return False
+
+class Worm_sub(Worm):
+    def __init__(self, cell_width, cell_height, cell_size, color_outside, color_inside, \
+                 slack):
+        super().__init__(cell_width, cell_height, cell_size, color_outside, color_inside)
+        startx = int(cell_width/2)
+        starty = int(cell_height/2)
+        self.create_worm_list(startx, starty)
+
+    def is_outside(self, window):
+        for Coord in self.Coords:
+            if Coord['x'] < window['left'] or Coord['x'] >= window['right'] \
+                or Coord['y'] < window['bottom'] or Coord['y'] >= window['top']:
+                return True
+        return False
+
+    def inside_camera(self, camera):
+        for Coord in self.Coords:
+            if Coord['x'] >= camera['left'] and Coord['x'] < camera['right'] \
+                and Coord['y'] >= camera['bottom'] and Coord['y'] < camera['top']:
+                return True
+        return False
+
+    def calc_adjust_coord(self):
+        def calc_adjust(header, camera_center, slack):
+            adjust = 0
+            dist = header - camera_center
+            if abs(dist) > slack: 
+                adjust = abs(dist) - slack
+            return adjust if dist > 0 else -adjust
+
+        adjust_x = calc_adjust(self.Coord[0]['x'], int(self.cell_width/2), self.slack)
+        adjust_y = calc_adjust(self.Coord[0]['y'], int(self.cell_height/2), self.slack)
+
+        self.adjust_coord(adjust_x, adjust_y)
+
+        return adjust_x, adjust_y
+
+    def adjust_cood(self, adjust_x, adjust_y):
+
+
+
+
 class Worm(object):
     def __init__(self, cell_width, cell_height, cell_size, 
                  color_outside=DARKGREEN, color_inside=GREEN):
@@ -189,11 +250,15 @@ class Worm(object):
         margin = 5
         startx = random.randint(margin, cell_width - margin)
         starty = random.randint(margin, cell_height - margin)
+        self.create_worm_list(startx, starty)
+
+    def create_worm_list(self, startx, starty):
         self.Coords = [
             {'x': startx, 'y': starty},
             {'x': startx - 1, 'y': starty},
             {'x': startx - 2, 'y': starty}
         ]
+
 
     def draw(self, displaysurf):
         for coord in self.Coords:
