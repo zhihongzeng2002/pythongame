@@ -191,52 +191,14 @@ class Apple_sub(Apple):
         return False
 
     def inside_camera(self, camera):
-        if self.Coord['x'] >= camera['left'] and self.Coord['x'] < window['right'] \
-            and self.Coord['y'] >= window['bottom'] and self.Coord['y'] < window['top']:
+        if self.Coord['x'] >= camera['left'] and self.Coord['x'] < camera['right'] \
+            and self.Coord['y'] >= camera['bottom'] and self.Coord['y'] < camera['top']:
             return True
         return False
 
-class Worm_sub(Worm):
-    def __init__(self, cell_width, cell_height, cell_size, color_outside, color_inside, \
-                 slack):
-        super().__init__(cell_width, cell_height, cell_size, color_outside, color_inside)
-        startx = int(cell_width/2)
-        starty = int(cell_height/2)
-        self.create_worm_list(startx, starty)
-
-    def is_outside(self, window):
-        for Coord in self.Coords:
-            if Coord['x'] < window['left'] or Coord['x'] >= window['right'] \
-                or Coord['y'] < window['bottom'] or Coord['y'] >= window['top']:
-                return True
-        return False
-
-    def inside_camera(self, camera):
-        for Coord in self.Coords:
-            if Coord['x'] >= camera['left'] and Coord['x'] < camera['right'] \
-                and Coord['y'] >= camera['bottom'] and Coord['y'] < camera['top']:
-                return True
-        return False
-
-    def calc_adjust_coord(self):
-        def calc_adjust(header, camera_center, slack):
-            adjust = 0
-            dist = header - camera_center
-            if abs(dist) > slack: 
-                adjust = abs(dist) - slack
-            return adjust if dist > 0 else -adjust
-
-        adjust_x = calc_adjust(self.Coord[0]['x'], int(self.cell_width/2), self.slack)
-        adjust_y = calc_adjust(self.Coord[0]['y'], int(self.cell_height/2), self.slack)
-
-        self.adjust_coord(adjust_x, adjust_y)
-
-        return adjust_x, adjust_y
-
-    def adjust_cood(self, adjust_x, adjust_y):
-
-
-
+    def adjust_coord(self, adjust_x, adjust_y):
+        self.Coord['x'] -= adjust_x
+        self.Coord['y'] -= adjust_y
 
 class Worm(object):
     def __init__(self, cell_width, cell_height, cell_size, 
@@ -305,5 +267,102 @@ class Worm(object):
             return True
         else:
             return False
+
+class Worm_sub(Worm):
+    def __init__(self, cell_width, cell_height, cell_size, color_outside, color_inside, \
+                 slack):
+        super().__init__(cell_width, cell_height, cell_size, color_outside, color_inside)
+        self.slack = slack
+        startx = int(cell_width/2)
+        starty = int(cell_height/2)
+        self.create_worm_list(startx, starty)
+
+    def is_outside(self, window):
+        for Coord in self.Coords:
+            if Coord['x'] < window['left'] or Coord['x'] >= window['right'] \
+                or Coord['y'] < window['bottom'] or Coord['y'] >= window['top']:
+                return True
+        return False
+
+    def inside_camera(self, camera):
+        for Coord in self.Coords:
+            if Coord['x'] >= camera['left'] and Coord['x'] < camera['right'] \
+                and Coord['y'] >= camera['bottom'] and Coord['y'] < camera['top']:
+                return True
+        return False
+
+    def calc_adjust_coord(self):
+        def calc_adjust(header, camera_center, slack):
+            adjust = 0
+            dist = header - camera_center
+            if abs(dist) > slack: 
+                adjust = abs(dist) - slack
+            return adjust if dist > 0 else -adjust
+
+        adjust_x = calc_adjust(self.Coords[0]['x'], int(self.cell_width/2), self.slack)
+        adjust_y = calc_adjust(self.Coords[0]['y'], int(self.cell_height/2), self.slack)
+
+        self.adjust_coord(adjust_x, adjust_y)
+
+        return adjust_x, adjust_y
+
+    def adjust_coord(self, adjust_x, adjust_y):
+        for i in range(len(self.Coords)):
+            self.Coords[i]['x'] -= adjust_x
+            self.Coords[i]['y'] -= adjust_y
+
+    def change_direction_calc_adjust(self, direction):
+        self.change_direction(direction)
+        self.update()
+        self.remove_tail()
+        return self.calc_adjust_coord()
+
+def run_game_camera_move_apple(displaysurf, fpsclock, num_apple):
+    slack = 8
+    worm = Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKGREEN, GREEN, slack)
+    apples = [Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE) for _ in range(num_apple)]
+    window = {
+        'left': -CELLWIDTH, 'right': 2 * CELLWIDTH,
+        'bottom': -CELLHEIGHT, 'top': 2 * CELLHEIGHT
+    }
+    camera = {
+        'left': 0, 'right': CELLWIDTH,
+        'bottom': 0, 'top': CELLHEIGHT
+    }
+
+    while True:
+        adjust_x, adjust_y = 0, 0
+        for i in range(len(apples)-1, -1, -1):
+            if apples[i].is_outside(window):
+                del apples[i]
+        while len(apples) < num_apple:
+            apple = Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+            if not apple.inside_camera(camera):
+                apples.append(apple)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    adjust_x, adjust_y = worm.change_direction_calc_adjust(LEFT)
+                elif event.key == K_RIGHT:
+                    adjust_x, adjust_y = worm.change_direction_calc_adjust(RIGHT)
+                elif event.key == K_UP:
+                    adjust_x, adjust_y = worm.change_direction_calc_adjust(UP)
+                elif event.key == K_DOWN:
+                    adjust_x, adjust_y = worm.change_direction_calc_adjust(DOWN)
+
+        displaysurf.fill(BGCOLOR)
+        drawGrid(displaysurf)
+        worm.draw(displaysurf)
+
+        for apple in apples:
+            apple.adjust_coord(adjust_x, adjust_y)
+            apple.draw(displaysurf)
+
+        drawScore(len(worm.Coords) - 3 , displaysurf)
+        pygame.display.update()
+        fpsclock.tick(FPS)
 
 
