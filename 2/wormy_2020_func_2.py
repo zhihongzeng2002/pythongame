@@ -648,11 +648,14 @@ def runGame_camera_move_multipe_apple_worm(DISPLAYSURF, FPSCLOCK, num_apple):
             apple.adjust_coord(adjust_x, adjust_y)
             apple.draw(DISPLAYSURF)
 
+        chosen = random.randint(0, len(enemy_worms)-1) 
+        enemy_worms[chosen].change_direction(random.choice([LEFT, RIGHT, UP, DOWN]))
+            
         for w in enemy_worms:
             if worm.hit(w):
                 return
-            if not count % 10:
-                w.change_direction(random.choice([LEFT, RIGHT, UP, DOWN]))
+            # if not count % 10:
+            #     w.change_direction(random.choice([LEFT, RIGHT, UP, DOWN]))
             w.update_remove_tail()
             w.adjust_coord(adjust_x, adjust_y)
             w.draw(DISPLAYSURF)
