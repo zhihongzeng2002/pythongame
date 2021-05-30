@@ -461,16 +461,24 @@ def run_game_camera_move_apple_worm(displaysurf, fpsclock, num_apple):
         enemy_worms[chosen].change_direction(random.choice([LEFT, RIGHT, UP, DOWN]))
 
         hit_list = []
-        for k in range(len(enemy_worms)-1, -1, -1):
-            one_worm = enemy_worms[k]
+        for one_worm in enemy_worms:
             if worm.hit(one_worm):
-                del enemy_worms[k]
-                if len(worm.Coords) < 3:
-                    return
+                return
             else:
                 one_worm.update_remove_tail()
                 one_worm.adjust_coord(adjust_x, adjust_y)
                 one_worm.draw(displaysurf)
+
+        # for k in range(len(enemy_worms)-1, -1, -1):
+        #     one_worm = enemy_worms[k]
+        #     if worm.hit(one_worm):
+        #         del enemy_worms[k]
+        #         if len(worm.Coords) < 3:
+        #             return
+        #     else:
+        #         one_worm.update_remove_tail()
+        #         one_worm.adjust_coord(adjust_x, adjust_y)
+        #         one_worm.draw(displaysurf)
 
         drawScore(len(worm.Coords) - 3 , displaysurf)
         pygame.display.update()
