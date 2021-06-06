@@ -16,7 +16,8 @@ def main():
 
     while True:
         # runGame_apple_worm_update_multiple_apple(DISPLAYSURF, FPSCLOCK, 5)
-        run_game_camera_move_apple_worm(DISPLAYSURF, FPSCLOCK, 100)
+        # run_game_camera_move_apple_worm(DISPLAYSURF, FPSCLOCK, 100)
+        run_game_camera_move_apple_worm_image(DISPLAYSURF, FPSCLOCK, 100)
         showGameOverScreen(DISPLAYSURF)
 
 
