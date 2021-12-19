@@ -94,3 +94,9 @@ print(board)
 
 get_random_move(board, 'O')
 print(board)
+
+print('\n-----test get player move\n')
+board = create_board(3)
+print(board)
+get_player_move(board, 'X')
+print(board)

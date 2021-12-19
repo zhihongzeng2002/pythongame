@@ -84,3 +84,62 @@ def get_random_move(board, letter):
     available_move = get_available_move(board)
     move = random.choice(available_move)
     make_move(board, letter, move)
+
+def get_player_move(board, letter):
+    height, width = board.shape
+    available_move = get_available_move(board)
+    move = (-1, -1)
+    while move not in available_move:
+        ans =input(f'What is your next move (0-{height-1}, 0-{width-1})?')
+        move = ans.split(',')
+        move = [int(move[0]), int(move[0])]
+    make_move(board, letter, move)
+
+def tictactoe(size=3):
+    print('Welcome to Tic Tac Toe')
+    player, computer = input_player_selection()
+    print(f'you are {player} and the computer is {computer}')
+    first = who_go_first()
+    print(f'{first} goes first')
+    board = create_board(size, '')
+    turn = first
+    #print(board)
+    #print(get_available_move(board))
+
+    while get_available_move(board):
+        if turn == 'player':
+            get_player_move(board, player)
+            print(board)
+            turn = 'computer'
+            if game_won(board, player):
+                print('congratulations, you won')
+                return
+        else:
+            get_random_move(board, computer)
+            print(board)
+            turn = 'player'
+            if game_won(board, computer):
+                print('the computer has won the game')
+                return
+    print('the game is a tie')
+
+def get_win_defense_move(board, letter, available_move, win_defense_flag):
+    if win_defense_flag:
+        target = letter
+    else:
+        if letter == 'O':
+            target = 'X'
+        else:
+            target = 'O'
+
+    for move in avaiable_move:
+        board_clone = copy.deepcopy(board)
+        make_move(board_clone, target, move)
+        if game_won(board_clone, target):
+           move_move(board, letter, move)
+           return True
+    return False
+
+if __name__ == '__main__':
+    tictactoe()
+
