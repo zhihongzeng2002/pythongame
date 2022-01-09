@@ -92,12 +92,10 @@ def get_player_move(board, letter):
     move = (-1, -1)
     while move not in available_move:
         ans = input(f'What is your next move (0-{height-1}, 0-{width-1})?')
-        print(ans)
         move = ans.split(',')
-        print(move)
         move = [int(move[0]), int(move[1])]
-        print(move)
-        print(move in get_available_move(board))
+        #print(move)
+        #print(move in get_available_move(board))
     make_move(board, letter, move)
 
 def tictactoe(size=3):
@@ -176,7 +174,7 @@ def tictactoe_smart(size = 3):
 
     while get_available_move(board):
         if turn == 'player':
-            print(get_available_move(board))
+            #print(get_available_move(board))
             get_player_move(board, player)
             print(board)
             turn = 'computer'
