@@ -95,8 +95,30 @@ print(board)
 get_random_move(board, 'O')
 print(board)
 
-print('\n-----test get player move\n')
+#print('\n-----test get player move\n')
+#board = create_board(3)
+#print(board)
+#get_player_move(board, 'X')
+#print(board)
+
+print('\n-------test get smart move\n')
 board = create_board(3)
+board[1, 0:2] = ['X', 'X']
 print(board)
-get_player_move(board, 'X')
+get_smart_move(board, 'X')
 print(board)
+assert game_won(board, 'X'), 'Fail'
+
+board = create_board(3)
+board[1, 0:2] = ['O', 'O']
+print(board)
+get_smart_move(board, 'X')
+print(board)
+assert not game_won(board, 'X'), 'Fail'
+
+print('\n------ test get prefered move\n')
+board = create_board(3)
+get_prefered_random_move(board, 'X')
+print(board)
+get_prefered_random_move(board, 'X')
+print (board)
