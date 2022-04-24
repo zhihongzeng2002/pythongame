@@ -10,7 +10,8 @@ def main():
     #runGame_base(DISPLAYSURF, FPSCLOCK)
     #runGame_1(DISPLAYSURF, FPSCLOCK)
     #runGame_Apple(DISPLAYSURF, FPSCLOCK)
-    runGame_Apple_Worm(DISPLAYSURF, FPSCLOCK)
+    # runGame_Apple_Worm(DISPLAYSURF, FPSCLOCK)
+    runGame_Apple_Worm_update(DISPLAYSURF, FPSCLOCK)
 
 if __name__ == '__main__':
     main()

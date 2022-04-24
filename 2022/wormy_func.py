@@ -37,6 +37,25 @@ class Worm(object):
         starty = random.randint(margin, cell_height - margin)
         self.Coords = [{'x': startx, 'y': starty}, {'x': startx - 1, 'y':starty}, {'x': startx - 2, 'y':starty}]
 
+    def update(self):
+        if self.direction == UP:
+            newHead = {'x': self.Coords[HEAD]['x'], 'y': self.Coords[HEAD]['y']-1}
+        if self.direction == DOWN:
+            newHead = {'x': self.Coords[HEAD]['x'], 'y': self.Coords[HEAD]['y']+1}
+        if self.direction == LEFT:
+            newHead = {'x': self.Coords[HEAD]['x']-1, 'y': self.Coords[HEAD]['y']}
+        if self.direction == RIGHT:
+            newHead = {'x': self.Coords[HEAD]['x']+1, 'y': self.Coords[HEAD]['y']}
+
+        self.Coords.insert(0, newHead) 
+
+    def remove_tail(self):
+        del self.Coords[-1]   
+
+    def update_remove_tail(self):
+        self.update()
+        self.remove_tail()
+
     def draw(self, DISPLAYSURF):
         for coord in self.Coords:
             x = coord['x'] * self.cell_size
@@ -174,6 +193,36 @@ def runGame_Apple_Worm(DISPLAYSURF, FPSCLOCK):
         drawGrid(DISPLAYSURF)
         drawScore(score, DISPLAYSURF)
         apple.draw(DISPLAYSURF)
+        worm.draw(DISPLAYSURF)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def runGame_Apple_Worm_update(DISPLAYSURF, FPSCLOCK):
+    score = 0
+    apple = Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+    worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT and worm.direction != RIGHT:
+                    worm.direction = LEFT
+                elif event.key == K_RIGHT and worm.direction != LEFT:
+                    worm.direction = RIGHT
+                elif event.key == K_UP and worm.direction != DOWN:
+                    worm.direction = UP
+                elif event.key == K_DOWN and worm.direction != UP:
+                    worm.direction = DOWN
+                else:
+                    apple.update()
+        
+        DISPLAYSURF.fill(BGCOLOR)
+        drawGrid(DISPLAYSURF)
+        drawScore(score, DISPLAYSURF)
+        apple.draw(DISPLAYSURF)
+        worm.update_remove_tail()
         worm.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
