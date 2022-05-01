@@ -11,7 +11,10 @@ def main():
     #runGame_1(DISPLAYSURF, FPSCLOCK)
     #runGame_Apple(DISPLAYSURF, FPSCLOCK)
     # runGame_Apple_Worm(DISPLAYSURF, FPSCLOCK)
-    runGame_Apple_Worm_update(DISPLAYSURF, FPSCLOCK)
+
+    while True:
+        runGame_Apple_Worm_update(DISPLAYSURF, FPSCLOCK)
+        showGameOverScreen_base(DISPLAYSURF)
 
 if __name__ == '__main__':
     main()
