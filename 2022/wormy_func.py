@@ -47,6 +47,12 @@ class Worm(object):
             wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, self.cell_size - 8, self.cell_size - 8)
             pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
 
+    def change_direction(self, direction):
+        if (direction in [UP, DOWN] and self.direction in \
+            [LEFT, RIGHT]) or (direction in [LEFT, RIGHT] \
+                and self.direction in [UP, DOWN]):
+            self.direction = direction
+
     def update(self):
         if self.direction == UP:
             newHead = {'x': self.Coords[HEAD]['x'], 'y': self.Coords[HEAD]['y']-1}
@@ -237,14 +243,14 @@ def runGame_Apple_Worm_update(DISPLAYSURF, FPSCLOCK):
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN:
-                if event.key == K_LEFT and worm.direction != RIGHT:
-                    worm.direction = LEFT
-                elif event.key == K_RIGHT and worm.direction != LEFT:
-                    worm.direction = RIGHT
-                elif event.key == K_UP and worm.direction != DOWN:
-                    worm.direction = UP
-                elif event.key == K_DOWN and worm.direction != UP:
-                    worm.direction = DOWN
+                if event.key == K_LEFT:
+                    worm.change_direction(LEFT)
+                elif event.key == K_RIGHT:
+                    worm.change_direction(RIGHT)
+                elif event.key == K_UP:
+                    worm.change_direction(UP)
+                elif event.key == K_DOWN:
+                    worm.change_direction(DOWN)
         
         worm.update()
 
@@ -259,5 +265,54 @@ def runGame_Apple_Worm_update(DISPLAYSURF, FPSCLOCK):
         drawScore(score, DISPLAYSURF)
         apple.draw(DISPLAYSURF)
         worm.draw(DISPLAYSURF)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def runGame_Multi_apple(DISPLAYSURF, FPSCLOCK, num_apples):
+    score = 0
+    apples = [Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE) \
+        for i in range(num_apples)]
+    worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+
+    while True:
+        if len(apples) < num_apples:
+            apples.append(Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE))
+
+        if worm.hit_edge() or worm.hit_self():
+            return
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    worm.change_direction(LEFT)
+                elif event.key == K_RIGHT:
+                    worm.change_direction(RIGHT)
+                elif event.key == K_UP:
+                    worm.change_direction(UP)
+                elif event.key == K_DOWN:
+                    worm.change_direction(DOWN)
+        
+        worm.update()
+
+        apple_bite = False
+        for i in range(len(apples) - 1, -1, -1):
+            apple = apples[i]
+            if worm.Coords[HEAD] == apple.Coord:
+                del apples[i]
+                apple_bite = True
+                break
+        if not apple_bite:
+            worm.remove_tail()
+
+        DISPLAYSURF.fill(BGCOLOR)
+        drawGrid(DISPLAYSURF)
+        drawScore(len(worm.Coords) - 3, DISPLAYSURF)
+        worm.draw(DISPLAYSURF)
+
+        for apple in apples:
+            apple.draw(DISPLAYSURF)
+
         pygame.display.update()
         FPSCLOCK.tick(FPS)
