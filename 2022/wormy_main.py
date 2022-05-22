@@ -14,7 +14,8 @@ def main():
 
     while True:
         #runGame_Apple_Worm_update(DISPLAYSURF, FPSCLOCK)
-        runGame_Multi_apple(DISPLAYSURF, FPSCLOCK, 10)
+        #runGame_Multi_apple(DISPLAYSURF, FPSCLOCK, 10)
+        runGame_camera_move(DISPLAYSURF, FPSCLOCK, 100)
         showGameOverScreen_base(DISPLAYSURF)
 
 if __name__ == '__main__':
