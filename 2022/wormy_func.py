@@ -120,7 +120,7 @@ class Apple(object):
         if self.Coord['x'] < window['left'] or self.Coord['x'] >= window['right'] \
             or self.Coord['y'] > window['bottom']\
                  or self.Coord['y'] <= window['top']:
-            print(self.Coord)
+            #print(self.Coord)
             return True
         return False
     
