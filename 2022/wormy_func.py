@@ -26,7 +26,8 @@ RIGHT = 'right'
 HEAD = 0
 
 class Worm(object):
-    def __init__(self, cell_width, cell_height, cell_size, color_outside=DARKGREEN, color_inside=GREEN, slack=0):
+    def __init__(self, cell_width, cell_height, cell_size, \
+           color_outside=DARKGREEN, color_inside=GREEN, slack=0):
         self.cell_width = cell_width
         self.cell_height = cell_height
         self.cell_size = cell_size
