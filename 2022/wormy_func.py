@@ -74,6 +74,20 @@ class Worm(object):
             wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, self.cell_size - 8, self.cell_size - 8)
             pygame.draw.rect(DISPLAYSURF, self.color_inside, wormInnerSegmentRect)
 
+    def is_outside(self, window):
+        for Coord in self.Coords:
+            if Coord['x'] < window['left'] or Coord['x'] >= window['right'] \
+                or Coord['y'] > window['bottom']\
+                    or Coord['y'] <= window['top']:
+                return True
+        return False
+    
+    def inside_camera(self, camera):
+        for Coord in self.Coords:
+            if Coord['x'] >= camera['left'] and Coord['x'] < camera['right'] and Coord['y'] <= camera['bottom'] and Coord['y'] > camera['top']:
+                return True
+        return False
+
     def change_direction(self, direction):
         if (direction in [UP, DOWN] and self.direction in \
             [LEFT, RIGHT]) or (direction in [LEFT, RIGHT] \
@@ -436,10 +450,7 @@ def runGame_enemy_worm(DISPLAYSURF, FPSCLOCK, num_apples, num_worm):
     slack = 8
     apples = [Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE) for i in range(num_apples)]
     worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKGREEN, GREEN, slack)
-    enemy_worms = [Worm(CELLWIDTH, \
-        CELLHEIGHT, CELLSIZE, \
-        DARKYELLOW, YELLOW, slack, True) \
-            for w in range(num_worm)]
+    enemy_worms = [Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKYELLOW, YELLOW, slack, True) for w in range(num_worm)]
     window = {'left': -CELLWIDTH, 'right': 2 * CELLWIDTH, \
         'top': -CELLHEIGHT, 'bottom': 2 * CELLHEIGHT}
     camera = {'left': 0, 'right': CELLWIDTH, 'top': 0, \
@@ -456,6 +467,16 @@ def runGame_enemy_worm(DISPLAYSURF, FPSCLOCK, num_apples, num_worm):
             apple = Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE)
             if not apple.inside_camera(camera):
                 apples.append(apple)
+        
+        for i in range(len(enemy_worms) - 1, -1, -1):
+            if enemy_worms[i].is_outside(window):
+                del enemy_worms[i]
+            
+        while len(enemy_worms) < num_worm:
+            w = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKYELLOW,\
+                YELLOW, slack, True)
+            if not w.inside_camera(camera):
+                enemy_worms.append(w)
 
         if worm.hit_edge() or worm.hit_self():
             return
