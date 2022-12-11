@@ -56,6 +56,52 @@ def get_random_move(board, letter):
     move = random.choice(available_move)
     make_move(board, letter, move)
 
+def row_won(board, letter):
+    height, width = board.shape
+    for x in range(height):
+        won = True
+        for y in range(width):
+            if board[x, y] != letter:
+                won = False
+                break
+        if won:
+            return True
+    return False
+
+def column_won(board, letter):
+    height, width = board.shape
+    for x in range(width):
+        won = True
+        for y in range(height):
+            if board[y, x] != letter:
+                won = False
+                break
+        if won:
+            return True
+    return False
+
+def diag_won(board, letter):
+    height, width = board.shape
+    won = True
+    for y in range(height):
+        if board[y,y] != letter:
+            won = False
+            break
+    if won:
+        return True
+    
+    won = True
+    for y in range(height):
+        if board[y, height - 1 - y] != letter:
+            won = False
+            break
+    return won
+
+def game_won(board, letter):
+    return column_won(board, letter) or \
+        row_won(board, letter) \
+        or diag_won(board, letter)
+
 def tictactoe(size = 3):
     print('Welcome to Tic Tac Toe!')
     player, computer = input_player_selection()
@@ -73,10 +119,18 @@ def tictactoe(size = 3):
             get_player_move(board, player)
             print(board)
             turn = 'computer'
+
+            if game_won(board, player):
+                print('You won the game.')
+                return
         else:
             get_random_move(board, computer)
             print(board)
             turn = 'player'
+
+            if game_won(board, computer):
+                print('The computer won the game.')
+                return
     
     print('The game is now over')
 

@@ -42,3 +42,48 @@ print(board)
 board = create_board(3)
 get_random_move(board, 'O')
 print(board)
+
+print('\n------- Test row_won')
+board = create_board(3)
+print(board)
+ans = row_won(board, 'X')
+print(ans)
+board[0,0] = 'X'
+board[0,1] = 'X'
+board[0,2] = 'X'
+print(board)
+ans = row_won(board, 'X')
+print(ans)
+
+print('\n------- Test row_column')
+board = create_board(3)
+print(board)
+ans = column_won(board, 'X')
+print(ans)
+board[0,0] = 'X'
+board[2,0] = 'X'
+board[1,0] = 'X'
+print(board)
+ans = column_won(board, 'X')
+print(ans)
+
+print('\n------- Test row_column')
+board = create_board(3)
+print(board)
+ans = diag_won(board, 'X')
+print(ans)
+board[0,0] = 'X'
+board[1,1] = 'X'
+board[2,2] = 'X'
+print(board)
+ans = diag_won(board, 'X')
+print(ans)
+
+board = create_board(3)
+#print(board)
+board[0,2] = 'X'
+board[1,1] = 'X'
+board[2,0] = 'X'
+print(board)
+ans = diag_won(board, 'X')
+print(ans)
