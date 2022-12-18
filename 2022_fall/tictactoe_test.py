@@ -87,3 +87,18 @@ board[2,0] = 'X'
 print(board)
 ans = diag_won(board, 'X')
 print(ans)
+
+print('\n-------test get smart move\n')
+board = create_board(3)
+board[1, 0:2] = ['X', 'X']
+print(board)
+get_smart_move(board, 'X')
+print(board)
+assert game_won(board, 'X'), 'Fail'
+
+board = create_board(3)
+board[1, 0:2] = ['O', 'O']
+print(board)
+get_smart_move(board, 'X')
+print(board)
+assert not game_won(board, 'X'), 'Fail'

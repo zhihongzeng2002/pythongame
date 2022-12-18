@@ -102,6 +102,30 @@ def game_won(board, letter):
         row_won(board, letter) \
         or diag_won(board, letter)
 
+def get_win_defense_move(board, letter, available_move, win_defense_flag):
+    if win_defense_flag:
+        target = letter
+    else:
+        if letter == 'O':
+            target = 'X'
+        else:
+            target = 'O'
+
+    for move in available_move:
+        board_clone = copy.deepcopy(board)
+        make_move(board_clone, target, move)
+        if game_won(board_clone, target):
+           make_move(board, letter, move)
+           return True
+    return False
+
+def get_smart_move(board, letter):
+    available_move = get_available_move(board)
+    win_move = get_win_defense_move(board, letter, available_move, True)
+    if win_move:
+        return True
+    return get_win_defense_move(board, letter, available_move, False)
+    
 def tictactoe(size = 3):
     print('Welcome to Tic Tac Toe!')
     player, computer = input_player_selection()
