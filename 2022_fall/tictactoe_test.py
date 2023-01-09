@@ -102,3 +102,10 @@ print(board)
 get_smart_move(board, 'X')
 print(board)
 assert not game_won(board, 'X'), 'Fail'
+
+print('\n--------test prefered move')
+board = create_board(3)
+get_prefered_random_move(board, 'X')
+print(board)
+get_prefered_random_move(board, 'X')
+print(board)
