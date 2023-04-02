@@ -84,6 +84,43 @@ class Worm(object):
             wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, \
                                 self.cell_size - 8, self.cell_size - 8)
             pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
+    
+    def update(self):
+        if self.direction == UP:
+            newHead = {'x': self.Coords[HEAD]['x'], 'y': self.Coords[HEAD]['y'] - 1}
+        elif self.direction == DOWN:
+            newHead = {'x': self.Coords[HEAD]['x'], 'y': self.Coords[HEAD]['y'] + 1}
+        elif self.direction == RIGHT:
+            newHead = {'x': self.Coords[HEAD]['x'] + 1, 'y': self.Coords[HEAD]['y']}
+        elif self.direction == LEFT:
+            newHead = {'x': self.Coords[HEAD]['x'] - 1, 'y': self.Coords[HEAD]['y']}
+        
+        self.Coords.insert(0, newHead)
+    
+    def remove_tail(self):
+        del self.Coords[-1]
+    
+    def update_remove_tail(self):
+        self.update()
+        self.remove_tail()
+    
+    def hit_edge(self):
+        if self.Coords[HEAD]['x'] == -1 \
+            or self.Coords[HEAD]['x'] == self.cell_width \
+        or self.Coords[HEAD]['y'] == - 1 \
+            or self.Coords[HEAD]['y'] == self.cell_height:
+            return True
+        else:
+            return False
+    
+    def hit_self(self):
+        if self.Coords[HEAD] in self.Coords[1:]:
+            return True
+        else:
+            return False
+
+def showGameOverScreen(DISPLAYSURF):
+    gameOverFont = pygame.font.Font(pygame.font.get_default_font(), 100)
 
 def runGame_base(DISPLAYSURF, FPSCLOCK):
     score = 0
@@ -143,6 +180,41 @@ def runGame_apple(DISPLAYSURF, FPSCLOCK):
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid(DISPLAYSURF)
         drawScore(score, DISPLAYSURF)
+        apple.draw(DISPLAYSURF)
+        worm.draw(DISPLAYSURF)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def runGame_wormMove(DISPLAYSURF, FPSCLOCK):
+    score = 0
+    apple = Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+    worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+    while True:
+        if worm.hit_edge() or worm.hit_self():
+            terminate()
+        
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT and worm.direction != RIGHT:
+                    worm.direction = LEFT
+                elif event.key == K_RIGHT and worm.direction != LEFT:
+                    worm.direction = RIGHT
+                elif event.key == K_UP and worm.direction != DOWN:
+                    worm.direction = UP
+                elif event.key == K_DOWN and worm.direction != UP:
+                    worm.direction = DOWN
+        
+        if worm.Coords[HEAD] == apple.Coord:
+            worm.update()
+            apple.update()
+        else:
+            worm.update_remove_tail()
+    
+        DISPLAYSURF.fill(BGCOLOR)
+        drawGrid(DISPLAYSURF)
+        drawScore(len(worm.Coords) - 3, DISPLAYSURF)
         apple.draw(DISPLAYSURF)
         worm.draw(DISPLAYSURF)
         pygame.display.update()
