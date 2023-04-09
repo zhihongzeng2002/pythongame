@@ -10,7 +10,11 @@ def main():
     # runGame_base(DISPLAYSURF, FPSCLOCK)
     # runGame_1(DISPLAYSURF, FPSCLOCK)
     # runGame_apple(DISPLAYSURF, FPSCLOCK)
-    runGame_wormMove(DISPLAYSURF, FPSCLOCK)
+    while True:
+        # runGame_wormMove(DISPLAYSURF, FPSCLOCK)
+        runGame_multiApple(DISPLAYSURF, FPSCLOCK, 10)
+
+        showGameOverScreen(DISPLAYSURF)
 
 if __name__ == '__main__':
     main()
