@@ -62,6 +62,27 @@ class Apple(object):
         appleRect = pygame.Rect(x, y, self.cell_size, self.cell_size)
         pygame.draw.rect(DISPLAYSURF, RED, appleRect)
 
+class Apple_sub(Apple):
+    def adjust_coord(self, adjust_x, adjust_y):
+        self.Coord['x'] -= adjust_x
+        self.Coord['y'] -= adjust_y
+    
+    def update(self):
+        self.Coord = {'x': random.randint(-self.cell_width, 2 * self.cell_width - 1), \
+                      'y': random.randint(-self.cell_height, 2 * self.cell_height - 1)}
+    
+    def is_outside(self, window):
+        if (self.Coord['x'] < window['left'] or self.Coord['x'] >= window['right'] or \
+            self.Coord['y'] < window['bottom'] or self.Coord['y'] >= window['top']):
+            return True
+        return False
+
+    def inside_camera(self, camera):
+        if (self.Coord['x'] < camera['left'] or self.Coord['x'] >= camera['right'] or \
+            self.Coord['y'] < camera['bottom'] or self.Coord['y'] >= camera['top']):
+            return False
+        return True
+
 class Worm(object):
     def __init__(self, cell_width, cell_height, cell_size):
         self.cell_width = cell_width
@@ -118,6 +139,62 @@ class Worm(object):
             return True
         else:
             return False
+
+class Worm_sub(Worm):
+    def __init__ (self, cell_width, cell_height, cell_size, \
+                  colorOut, colorIn, slack,\
+                   random_pos = False):
+        super().__init__(cell_width, cell_height, cell_size)
+        self.slack = slack
+        if not random_pos:
+            startx = int(cell_width / 2)
+            starty = int(cell_height / 2)
+        
+        self.Coords = [{'x': startx, 'y': starty}, \
+                       {'x': startx - 1, 'y': starty}, \
+                        {'x': startx - 2, 'y': starty}]
+        self.adjust_coord(0, 0)
+    
+    def calc_adjust_coord(self):
+        def calc_adjust(header, camera_center, slack):
+            adjust = 0
+            dist = header - camera_center
+            if (abs(dist) > slack):
+                adjust = abs(dist) - slack
+            return adjust if dist > 0 else -adjust
+        
+        adjust_x = calc_adjust(self.Coords[0]['x'], int(self.cell_width/2), self.slack)
+        adjust_y = calc_adjust(self.Coords[0]['y'], int(self.cell_height/2), self.slack)
+        self.adjust_coord(adjust_x, adjust_y)
+    
+    def adjust_coord(self, adjust_x, adjust_y):
+        for i in range(len(self.Coords)):
+            self.Coords[i]['x'] -= adjust_x
+            self.Coords[i]['y'] -= adjust_y
+    
+    def update_eat_apple(self, apples):
+        self.update()
+        
+        apple_bite = False
+        for i in range(len(apples) - 1, -1, -1):
+            apple = apples[i]
+            if self.Coords[HEAD] == apple.Coord:
+                del apples[i]
+                apple_bite = True
+                break
+        
+        if not apple_bite:
+            self.remove_tail()
+
+    def change_direction(self, direction):
+        if (direction in [UP, DOWN] and self.direction in [LEFT, RIGHT])\
+            or (direction in [LEFT, RIGHT] and self.direction in [UP, DOWN]):
+            self.direction = direction
+    
+    def change_direction_update(self, direction, apples):
+        self.change_direction(direction)
+        self.update_eat_apple(apples)
+        return self.calc_adjust_coord()
 
 def showGameOverScreen(DISPLAYSURF):
     gameOverFont = pygame.font.Font(pygame.font.get_default_font(), 100)
