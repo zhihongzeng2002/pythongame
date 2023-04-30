@@ -12,7 +12,9 @@ def main():
     # runGame_apple(DISPLAYSURF, FPSCLOCK)
     while True:
         # runGame_wormMove(DISPLAYSURF, FPSCLOCK)
-        runGame_multiApple(DISPLAYSURF, FPSCLOCK, 10)
+        # runGame_multiApple(DISPLAYSURF, FPSCLOCK, 10)
+        # runGame_moveCamera(DISPLAYSURF, FPSCLOCK, 100)
+        runGame_enemyWorm(DISPLAYSURF, FPSCLOCK, 100, 20)
 
         showGameOverScreen(DISPLAYSURF)
 
