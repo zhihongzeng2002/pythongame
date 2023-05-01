@@ -88,7 +88,7 @@ print(board)
 ans = diag_won(board, 'X')
 print(ans)
 
-print('\n-------test get smart move\n')
+print('\n ---- test get_smart_move\n')
 board = create_board(3)
 board[1, 0:2] = ['X', 'X']
 print(board)
