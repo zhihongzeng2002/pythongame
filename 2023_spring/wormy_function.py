@@ -83,6 +83,15 @@ class Apple_sub(Apple):
             return False
         return True
 
+class AppleImg(Apple_sub):
+    def __init__(self, cell_width, cell_height, cell_size, apple_file):
+        super().__init__(cell_width, cell_height, cell_size)
+        apple_original = pygame.image.load(apple_file)
+        self.apple_image = pygame.transform.scale(apple_original, (cell_size, cell_size))
+    
+    def draw(self, displaysurf):
+        displaysurf.blit(self.apple_image, (self.Coord['x'] * self.cell_size, self.Coord['y'] * self.cell_size))
+
 class Worm(object):
     def __init__(self, cell_width, cell_height, cell_size):
         self.cell_width = cell_width
@@ -212,6 +221,7 @@ class Worm_sub(Worm):
         for e_coord in enemy_worm.Coords:
             for coord in self.Coords:
                 if e_coord == coord:
+                    self.remove_tail()
                     return True
         return False
 
@@ -250,6 +260,15 @@ def showGameOverScreen(DISPLAYSURF):
                 terminate()
             elif event.type == KEYUP:
                 return
+
+def remove_add_object(group, max_num, window, camera, className, *classArgs):
+    for i in range(len(group) - 1, -1, -1):
+        if group[i].is_outside(window):
+            del group[i]
+    while len(group) < max_num:
+        item = className(*classArgs)
+        if not item.inside_camera(camera):
+            item.append(item)
 
 def runGame_base(DISPLAYSURF, FPSCLOCK):
     score = 0
@@ -499,6 +518,141 @@ def runGame_enemyWorm(DISPLAYSURF, FPSCLOCK, num_apple, num_worm):
             w.update_remove_tail()
             w.adjust_coord(adjust_x, adjust_y)
             w.draw(DISPLAYSURF)
+
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def runGame_enemyHit(DISPLAYSURF, FPSCLOCK, num_apple, num_worm):
+    slack = 8
+    count = 0
+    apple_file = "apple.png"
+
+    worm = Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKGREEN, GREEN, slack)
+    apples = [AppleImg(CELLWIDTH, CELLHEIGHT, CELLSIZE,\
+                        apple_file) for i in range (num_apple)]
+    enemy_worms = [Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKYELLOW, YELLOW, slack, True) \
+                   for i in range(num_worm)]
+    
+    window = {'left': -CELLWIDTH, 'right' : 2 * CELLWIDTH, \
+              'bottom': -CELLHEIGHT, 'top': 2 * CELLHEIGHT}
+    camera = {'left': 0, 'right': CELLWIDTH, 'bottom': 0, 'top': CELLHEIGHT}
+
+    while True:
+        count += 1
+        adjust_x, adjust_y = 0, 0
+        for i in range(len(apples) - 1, -1, -1):
+            if apples[i].is_outside(window):
+                del apples[i]
+        while len(apples) < num_apple:
+            apple = Apple_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+            if not apple.inside_camera(camera):
+                apples.append(apple)
+        
+        for i in range(len(enemy_worms) - 1, -1, -1):
+            if enemy_worms[i].is_outside(window):
+                del enemy_worms[i]
+        while len(enemy_worms) < num_worm:
+            w = Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKYELLOW, YELLOW, slack, True)
+            if not w.inside_camera(camera):
+                enemy_worms.append(w)
+        
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    adjust_x, adjust_y = worm.change_direction_update(LEFT, apples)
+                elif event.key == K_RIGHT:
+                    adjust_x, adjust_y = worm.change_direction_update(RIGHT, apples)
+                elif event.key == K_UP:
+                    adjust_x, adjust_y = worm.change_direction_update(UP, apples)
+                elif event.key == K_DOWN:
+                    adjust_x, adjust_y = worm.change_direction_update(DOWN, apples)
+    
+        DISPLAYSURF.fill(BGCOLOR)
+        drawGrid(DISPLAYSURF)
+        drawScore(len(worm.Coords) - 3, DISPLAYSURF)
+        worm.draw(DISPLAYSURF)
+
+        for apple in apples:
+            apple.adjust_coord(adjust_x, adjust_y)
+            apple.draw(DISPLAYSURF)
+
+        for w in range(len(enemy_worms) - 1, -1, -1):
+            one_worm = enemy_worms[w]
+            if worm.hit(one_worm):
+                del enemy_worms[w]
+                if (len(worm.Coords) < 3):
+                    return
+            else:
+                if not count % 10:
+                    one_worm.change_direction(random.choice((LEFT, RIGHT, UP, DOWN)))
+                one_worm.update_remove_tail()
+                one_worm.adjust_coord(adjust_x, adjust_y)
+                one_worm.draw(DISPLAYSURF)
+
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def runGame_optimized(DISPLAYSURF, FPSCLOCK, num_apple, num_worm):
+    slack = 8
+    count = 0
+    apple_file = "apple.png"
+
+    worm = Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKGREEN, GREEN, slack)
+    apples = [AppleImg(CELLWIDTH, CELLHEIGHT, CELLSIZE,\
+                        apple_file) for i in range (num_apple)]
+    enemy_worms = [Worm_sub(CELLWIDTH, CELLHEIGHT, CELLSIZE, DARKYELLOW, YELLOW, slack, True) \
+                   for i in range(num_worm)]
+    
+    window = {'left': -CELLWIDTH, 'right' : 2 * CELLWIDTH, \
+              'bottom': -CELLHEIGHT, 'top': 2 * CELLHEIGHT}
+    camera = {'left': 0, 'right': CELLWIDTH, 'bottom': 0, 'top': CELLHEIGHT}
+
+    while True:
+        count += 1
+        adjust_x, adjust_y = 0, 0
+        remove_add_object(apples, num_apple, window, camera, \
+                          AppleImg, CELLWIDTH, CELLHEIGHT, \
+                            CELLSIZE, apple_file)
+        remove_add_object(enemy_worms, num_worm, window, camera, \
+                          Worm_sub, CELLWIDTH, CELLHEIGHT, CELLSIZE, \
+                            DARKYELLOW, YELLOW, slack, True)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    adjust_x, adjust_y = worm.change_direction_update(LEFT, apples)
+                elif event.key == K_RIGHT:
+                    adjust_x, adjust_y = worm.change_direction_update(RIGHT, apples)
+                elif event.key == K_UP:
+                    adjust_x, adjust_y = worm.change_direction_update(UP, apples)
+                elif event.key == K_DOWN:
+                    adjust_x, adjust_y = worm.change_direction_update(DOWN, apples)
+    
+        DISPLAYSURF.fill(BGCOLOR)
+        drawGrid(DISPLAYSURF)
+        drawScore(len(worm.Coords) - 3, DISPLAYSURF)
+        worm.draw(DISPLAYSURF)
+
+        for apple in apples:
+            apple.adjust_coord(adjust_x, adjust_y)
+            apple.draw(DISPLAYSURF)
+
+        for w in range(len(enemy_worms) - 1, -1, -1):
+            one_worm = enemy_worms[w]
+            if worm.hit(one_worm):
+                del enemy_worms[w]
+                if (len(worm.Coords) < 3):
+                    return
+            else:
+                if not count % 10:
+                    one_worm.change_direction(random.choice((LEFT, RIGHT, UP, DOWN)))
+                one_worm.update_remove_tail()
+                one_worm.adjust_coord(adjust_x, adjust_y)
+                one_worm.draw(DISPLAYSURF)
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
