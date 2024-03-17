@@ -88,7 +88,7 @@ print(board)
 ans = diag_won(board, 'X')
 print(ans)
 
-print('\n-------test get smart move\n')
+print('\n ---- test get_smart_move\n')
 board = create_board(3)
 board[1, 0:2] = ['X', 'X']
 print(board)
@@ -102,3 +102,10 @@ print(board)
 get_smart_move(board, 'X')
 print(board)
 assert not game_won(board, 'X'), 'Fail'
+
+print('\n--------test prefered move')
+board = create_board(3)
+get_prefered_random_move(board, 'X')
+print(board)
+get_prefered_random_move(board, 'X')
+print(board)

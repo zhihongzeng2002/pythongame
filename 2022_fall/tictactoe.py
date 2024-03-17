@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import copy
 
 def create_board(size, value = ' '):
     board = np.full((size, size), value)
@@ -125,7 +126,23 @@ def get_smart_move(board, letter):
     if win_move:
         return True
     return get_win_defense_move(board, letter, available_move, False)
+
+def get_prefered_random_move (board, letter):
+    available_move = get_available_move(board)
+    height, width = board.shape
+    prefered_move = [[int(height/2), int(width/2)], [0,0], \
+        [0, width - 1], [height - 1, 0], [height - 1, width - 1]]
+    random.shuffle(prefered_move)
+    move = None
+    for p in prefered_move:
+        if p in available_move:
+            move = p
+            break
     
+    if move is None:
+        move = random.choice(available_move)
+    make_move(board, letter, move)
+
 def tictactoe(size = 3):
     print('Welcome to Tic Tac Toe!')
     player, computer = input_player_selection()
@@ -158,5 +175,39 @@ def tictactoe(size = 3):
     
     print('The game is now over')
 
+def tictactoe_smart(size = 3):
+    print('Welcome to Tic Tac Toe!')
+    player, computer = input_player_selection()
+    print(f'you are {player}, and computer is {computer}')
+
+    first = who_go_first()
+    print(f'{first} will go first')
+
+    board = create_board(size, ' ')
+
+    turn = first
+
+    while get_available_move(board):
+        if turn == 'player':
+            get_player_move(board, player)
+            print(board)
+            turn = 'computer'
+
+            if game_won(board, player):
+                print('You won the game.')
+                return
+        else:
+            print('computer move')
+            if not get_smart_move(board, computer):
+                get_prefered_random_move(board, computer)
+            print(board)
+            turn = 'player'
+
+            if game_won(board, computer):
+                print('The computer won the game.')
+                return
+    
+    print('The game is now over')
+
 if __name__ == '__main__':
-    tictactoe()
+    tictactoe_smart()
