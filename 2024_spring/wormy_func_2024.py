@@ -1,4 +1,4 @@
-import random, pygame, sys
+import random, pygame, sys, time
 from pygame.locals import QUIT, KEYDOWN, KEYUP, K_LEFT, K_RIGHT, K_UP, K_DOWN
 
 FPS = 5
@@ -78,6 +78,24 @@ class Worm(object):
             wormInnerSegmentRect = pygame.Rect(x+4, y+4, self.cell_size-8, self.cell_size-8)
             pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
      
+    def update(self):
+        if (self.direction == UP):
+            newHead = {'x': self.Coords[0]['x'], 'y': self.Coords[0]['y'] - 1}
+        elif (self.direction == DOWN):
+            newHead = {'x': self.Coords[0]['x'], 'y': self.Coords[0]['y'] + 1}
+        elif (self.direction == LEFT):
+            newHead = {'x': self.Coords[0]['x'] - 1, 'y': self.Coords[0]['y']}
+        elif (self.direction == RIGHT):
+            newHead = {'x': self.Coords[0]['x'] + 1, 'y': self.Coords[0]['y']}
+
+        self.Coords.insert(0, newHead)
+    
+    def remove_tail(self):
+        del self.Coords[-1]
+    
+    def update_remove_tail(self):
+        self.update()
+        self.remove_tail()
 
 def runGame_base(DISPLAYSURF, FPSCLOCK):
     score = 0
@@ -132,3 +150,72 @@ def runGame_show_apple(DISPLAYSURF, FPSCLOCK):
         
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+
+def runGame_show_worm(DISPLAYSURF, FPSCLOCK):
+    score = 0
+    apple = Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+    worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    score -= 1
+                elif event.key == K_RIGHT:
+                    score += 1
+                elif event.key == K_UP:
+                    score += 10
+                elif event.key == K_DOWN:
+                    score -= 10
+                else:
+                    apple.update()
+        
+        DISPLAYSURF.fill(BLACK)
+
+        drawGrid(DISPLAYSURF)
+        drawScore(score, DISPLAYSURF)
+        apple.draw(DISPLAYSURF)
+        worm.draw(DISPLAYSURF)
+        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def runGame(DISPLAYSURF, FPSCLOCK):
+    score = 0
+    apple = Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+    worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    worm.direction = LEFT
+                elif event.key == K_RIGHT:
+                    worm.direction = RIGHT
+                elif event.key == K_UP:
+                    worm.direction = UP
+                elif event.key == K_DOWN:
+                    worm.direction = DOWN
+        
+        worm.update()
+
+        if worm.Coords[0] == apple.Coord:
+            apple.update()
+        else:
+            worm.remove_tail()
+        
+        DISPLAYSURF.fill(BLACK)
+
+        drawGrid(DISPLAYSURF)
+        drawScore(score, DISPLAYSURF)
+        apple.draw(DISPLAYSURF)
+        worm.draw(DISPLAYSURF)
+        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+        time.sleep(1)
