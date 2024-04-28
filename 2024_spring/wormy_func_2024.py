@@ -39,6 +39,21 @@ def drawScore(score, DISPLAYSURF):
     scoreRect.topleft = (WINDOWWIDTH - 120, 10)
     DISPLAYSURF.blit(scoreSurf, scoreRect)
 
+def showGameOverScreen (DISPLAYSURF):
+    gameOverFont = pygame.font.Font(pygame.font.get_default_font(), 100)
+    gameSurf = gameOverFont.render(f'Game Over', True, WHITE)
+    gameRect = gameSurf.get_rect()
+    gameRect.midtop = (int(WINDOWWIDTH / 2), int(WINDOWHEIGHT / 2) - 50)
+    DISPLAYSURF.blit(gameSurf, gameRect)
+    pygame.display.update()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYUP:
+                return
+
 class Apple(object):
     def __init__(self, cell_width, cell_height, cell_size):
         self.cell_width = cell_width
@@ -93,9 +108,25 @@ class Worm(object):
     def remove_tail(self):
         del self.Coords[-1]
     
-    def update_remove_tail(self):
-        self.update()
-        self.remove_tail()
+    def hit_self(self):
+        if self.Coords[0] in self.Coords[1:]:
+            return True
+        else:
+            return False
+        
+    def hit_edge(self):
+        if self.Coords[0]['x'] == -1\
+            or self.Coords[0]['x'] == self.cell_width \
+            or self.Coords[0]['y'] == -1 \
+            or self.Coords[0]['y'] == self.cell_height:
+            return True
+        else:
+            return False
+
+    def change_direction(self, direction):
+        if (direction in [UP, DOWN] and self.direction in [LEFT, RIGHT]) \
+        or (direction in [LEFT, RIGHT] and self.direction in [UP, DOWN]):
+            self.direction = direction
 
 def runGame_base(DISPLAYSURF, FPSCLOCK):
     score = 0
@@ -188,18 +219,21 @@ def runGame(DISPLAYSURF, FPSCLOCK):
     worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
 
     while True:
+        if worm.hit_edge() or worm.hit_self():
+            return
+        
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN:
                 if event.key == K_LEFT:
-                    worm.direction = LEFT
+                    worm.change_direction(LEFT)
                 elif event.key == K_RIGHT:
-                    worm.direction = RIGHT
+                    worm.change_direction(RIGHT)
                 elif event.key == K_UP:
-                    worm.direction = UP
+                    worm.change_direction(UP)
                 elif event.key == K_DOWN:
-                    worm.direction = DOWN
+                     worm.change_direction(DOWN)
         
         worm.update()
 
@@ -217,5 +251,3 @@ def runGame(DISPLAYSURF, FPSCLOCK):
         
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
-        time.sleep(1)

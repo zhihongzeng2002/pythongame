@@ -8,8 +8,11 @@ def main():
     displaysurf = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     pygame.display.set_caption('Wormy')
 
+    while True:
     # runGame_show_apple(displaysurf, FPSCLOCK)
-    runGame(displaysurf, FPSCLOCK)
+        runGame(displaysurf, FPSCLOCK)
+
+        showGameOverScreen(displaysurf)
 
 
 if __name__ == '__main__':
