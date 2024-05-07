@@ -251,3 +251,50 @@ def runGame(DISPLAYSURF, FPSCLOCK):
         
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+
+def runGame_multapple(DISPLAYSURF, FPSCLOCK):
+    score = 0
+    apples = [Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE) for i in range(10)]
+    worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+
+    while True:
+        if worm.hit_edge() or worm.hit_self():
+            return
+        
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    worm.change_direction(LEFT)
+                elif event.key == K_RIGHT:
+                    worm.change_direction(RIGHT)
+                elif event.key == K_UP:
+                    worm.change_direction(UP)
+                elif event.key == K_DOWN:
+                     worm.change_direction(DOWN)
+        
+        worm.update()
+
+        apple_bite = False
+        for i in range(len(apples) - 1, -1, -1):
+            apple = apples[i]
+            if worm.Coords[0] == apple.Coord:
+                apple_bite = True
+                del apples[i]
+                break
+        if apple_bite == False:
+            worm.remove_tail()
+        
+        DISPLAYSURF.fill(BLACK)
+
+        drawGrid(DISPLAYSURF)
+        drawScore(score, DISPLAYSURF)
+
+        for apple in apples:
+            apple.draw(DISPLAYSURF)
+
+        worm.draw(DISPLAYSURF)
+        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
