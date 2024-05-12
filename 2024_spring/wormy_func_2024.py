@@ -71,6 +71,17 @@ class Apple(object):
         self.Coord = {'x': random.randint(0, self.cell_width -1), \
                       'y': random.randint(0, self.cell_height-1)}
 
+class Apple_move(Apple):
+    def update(self): 
+        self.Coord = {'x': random.randint(-self.cell_width, \
+                                          2 * self.cell_width -1), \
+                      'y': random.randint(-self.cell_height, \
+                                          2 * self.cell_height-1)}
+    
+    def adjust_coord(self, adjust_x, adjust_y):
+        self.Coord['x'] -= adjust_x
+        self.Coord['y'] -= adjust_y
+
 class Worm(object):
     def __init__(self, cell_width, cell_height, cell_size):
         self.cell_width = cell_width
@@ -127,6 +138,49 @@ class Worm(object):
         if (direction in [UP, DOWN] and self.direction in [LEFT, RIGHT]) \
         or (direction in [LEFT, RIGHT] and self.direction in [UP, DOWN]):
             self.direction = direction
+
+class Worm_move(Worm):
+    def __init__(self, cell_width, cell_height, cell_size, slack):
+        super().__init__(cell_width, cell_height, cell_size)
+        self.slack = slack
+        self.adjust_coord(0, 0)
+
+    def adjust_coord(self, adjust_x, adjust_y):
+        for i in range(len(self.Coords)):
+            self.Coords[i]['x'] -= adjust_x
+            self.Coords[i]['y'] -= adjust_y
+    
+    def calc_adjust_coord(self):
+        def calc_adjust(header, camera_center, slack):
+            adjust = 0
+            dist = header - camera_center
+            if abs(dist) > slack:
+                adjust = abs(dist) - slack
+                return adjust if dist > 0 else -adjust
+        
+        adjust_x = calc_adjust(self.Coords[0]['x'], \
+                               int(self.cell_width / 2), self.slack)
+        adjust_y = calc_adjust(self.Coords[0]['y'], \
+                               int(self.cell_height / 2), self.slack)
+        self.adjust_coord(adjust_x, adjust_y)
+    
+    def update_eat_apple(self, apples):
+        self.update()
+
+        apple_bite = False
+        for i in range(len(apples) - 1, -1, -1):
+            apple = apples[i]
+            if self.Coords[0] == apple.Coord:
+                apple_bite = True
+                del apples[i]
+                break
+        if apple_bite == False:
+            self.remove_tail()
+    
+    def change_direction_update (self, direction, apples):
+        self.change_direction(direction)
+        self.update_eat_apple(apples)
+        return self.calc_adjust_coord()
 
 def runGame_base(DISPLAYSURF, FPSCLOCK):
     score = 0
@@ -285,6 +339,41 @@ def runGame_multapple(DISPLAYSURF, FPSCLOCK):
                 break
         if apple_bite == False:
             worm.remove_tail()
+        
+        DISPLAYSURF.fill(BLACK)
+
+        drawGrid(DISPLAYSURF)
+        drawScore(score, DISPLAYSURF)
+
+        for apple in apples:
+            apple.draw(DISPLAYSURF)
+
+        worm.draw(DISPLAYSURF)
+        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def runGame_moveCamera(DISPLAYSURF, FPSCLOCK):
+    score = 0
+    apples = [Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE) for i in range(10)]
+    worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+
+    while True:
+        if worm.hit_edge() or worm.hit_self():
+            return
+        
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    worm.change_direction(LEFT)
+                elif event.key == K_RIGHT:
+                    worm.change_direction(RIGHT)
+                elif event.key == K_UP:
+                    worm.change_direction(UP)
+                elif event.key == K_DOWN:
+                     worm.change_direction(DOWN)
         
         DISPLAYSURF.fill(BLACK)
 
