@@ -10,8 +10,9 @@ def main():
 
     while True:
     # runGame_show_apple(displaysurf, FPSCLOCK)
-        runGame(displaysurf, FPSCLOCK)
+        # runGame(displaysurf, FPSCLOCK)
         # runGame_multapple(displaysurf, FPSCLOCK)
+        runGame_moveCamera(displaysurf, FPSCLOCK)
 
         showGameOverScreen(displaysurf)
 

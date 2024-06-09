@@ -81,12 +81,19 @@ class Apple_move(Apple):
     def adjust_coord(self, adjust_x, adjust_y):
         self.Coord['x'] -= adjust_x
         self.Coord['y'] -= adjust_y
+    
+    def inside_camera(self, camera):
+        if self.Coord['x'] >= camera['left'] and self.['x'] < camera['right'] \
+            and self.Coord['y'] >= camera['bottom'] and self.Coord['y'] < \
+            camera['top']:
+            return True
+        return False
 
 class Worm(object):
     def __init__(self, cell_width, cell_height, cell_size):
         self.cell_width = cell_width
         self.cell_height = cell_height
-        self.cell_size = cell_size   
+        self.cell_size = cell_size
         self.direction = RIGHT
         margin = 5
         startx = random.randint(margin, cell_width - margin)
@@ -156,13 +163,15 @@ class Worm_move(Worm):
             dist = header - camera_center
             if abs(dist) > slack:
                 adjust = abs(dist) - slack
-                return adjust if dist > 0 else -adjust
+            return adjust if dist > 0 else -adjust
         
         adjust_x = calc_adjust(self.Coords[0]['x'], \
                                int(self.cell_width / 2), self.slack)
         adjust_y = calc_adjust(self.Coords[0]['y'], \
                                int(self.cell_height / 2), self.slack)
         self.adjust_coord(adjust_x, adjust_y)
+
+        return adjust_x, adjust_y
     
     def update_eat_apple(self, apples):
         self.update()
@@ -354,26 +363,42 @@ def runGame_multapple(DISPLAYSURF, FPSCLOCK):
         FPSCLOCK.tick(FPS)
 
 def runGame_moveCamera(DISPLAYSURF, FPSCLOCK):
+    slack = 8
     score = 0
-    apples = [Apple(CELLWIDTH, CELLHEIGHT, CELLSIZE) for i in range(10)]
-    worm = Worm(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+    numApples = 50
 
+    apples = [Apple_move(CELLWIDTH, CELLHEIGHT, CELLSIZE) for i in range(numApples)]
+    worm = Worm_move(CELLWIDTH, CELLHEIGHT, CELLSIZE, slack)
+    #changed to subclass
+
+    camera = {'left':0, 'right': CELLWIDTH, 'top':0, 'bottom': CELLHEIGHT}
     while True:
+        adjust_x, adjust_y = 0, 0
+
+        while (len(apples) < numApples):
+            apple = Apple_move(CELLWIDTH, CELLHEIGHT, CELLSIZE)
+            if not apple.inside_camera(camera):
+                apples.append(apple) #check if inside camera
+
         if worm.hit_edge() or worm.hit_self():
             return
         
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
-            elif event.type == KEYDOWN:
+            elif event.type == KEYDOWN: #changed to adjustx, adjudty
                 if event.key == K_LEFT:
-                    worm.change_direction(LEFT)
+                    adjust_x, adjust_y = \
+                        worm.change_direction_update(LEFT, apples)
                 elif event.key == K_RIGHT:
-                    worm.change_direction(RIGHT)
+                    adjust_x, adjust_y = \
+                        worm.change_direction_update(RIGHT, apples)
                 elif event.key == K_UP:
-                    worm.change_direction(UP)
+                    adjust_x, adjust_y = \
+                        worm.change_direction_update(UP, apples)
                 elif event.key == K_DOWN:
-                     worm.change_direction(DOWN)
+                    adjust_x, adjust_y = \
+                        worm.change_direction_update(DOWN, apples)
         
         DISPLAYSURF.fill(BLACK)
 
@@ -381,7 +406,8 @@ def runGame_moveCamera(DISPLAYSURF, FPSCLOCK):
         drawScore(score, DISPLAYSURF)
 
         for apple in apples:
-            apple.draw(DISPLAYSURF)
+            apple.adjust_coord(adjust_x, adjust_y)
+            apple.draw(DISPLAYSURF) #updated all coords of apples
 
         worm.draw(DISPLAYSURF)
         
