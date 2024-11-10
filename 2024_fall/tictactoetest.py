@@ -46,7 +46,15 @@ print(checkWin(x, "o"))
 
 x = createBoard()
 print(getAvailableSpace(x))
-getComputerMove(x, "o")
-getComputerMove(x, "o")
-getComputerMove(x, "o")
+#getComputerMove(x, "o")
+#getComputerMove(x, "o")
+#getComputerMove(x, "o")
 printBoard(x)
+#getPlayerMove(x, "o")
+#getPlayerMove(x, "o")
+#getPlayerMove(x, "o")
+#printBoard(x)
+
+board = [["o", "o", "o"], ["o", "o", "o"], ["o", "o", "o"]]
+printBoard(board)
+print(getAvailableSpace(board))

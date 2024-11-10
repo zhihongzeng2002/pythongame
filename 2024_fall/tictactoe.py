@@ -106,4 +106,68 @@ def getComputerMove(board, letter):
 
 #get player move
 def getPlayerMove(board, letter):
-    
+    while True:
+        x = int(input("input x coordinate: "))
+        y = int(input("input y coordinate: "))
+
+        blankSpaces = getAvailableSpace(board)
+
+        if [x,y] in blankSpaces or len(blankSpaces) == 0:
+            break
+        else:
+            print("not valid space")
+
+    #add the move to the board
+    board[x][y] = letter
+
+def tictactoe():
+    print("Welcome to TicTacToe!")
+
+    #decide who is x and who is o
+    pick = pickLetter()
+    player = pick[0]
+    computer = pick[1]
+
+    #create board
+    board = createBoard()
+    printBoard(board)
+
+    #decide who goes first (random)
+    turn = random.choice(pick)
+
+    #check for available spaces
+    blanks = getAvailableSpaces(board)
+
+    #actual game loop
+    while len(blanks) > 0:
+
+        #if player turn, get player move
+        if turn == player:
+            getPlayerMove(board, player)
+
+        #if computer turn, get computer move
+        elif turn == computer:
+            getComputerMove(board, computer)
+
+        printBoard(board)
+
+        #check who won
+        if checkWin(board, player) == True:
+            print("The Player won!")
+            break
+        elif checkWin(board, computer) == True:
+            print("The Computer won!")
+            break
+
+        #change turn to the other player
+        if turn == "x":
+            turn = "o"
+        else:
+            turn = "x"
+
+        #check for available spaces
+        blanks = getAvailableSpaces(board)
+
+        #go back to start of the loop
+
+    print("Game over")
