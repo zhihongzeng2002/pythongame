@@ -9,9 +9,10 @@ def madlibs():
 
     file = open(outputFile, "w")
     for w in words:
-        #if w is (adjective) or (noun) or (verb)
-            #ask for w and write it
-        #else
+        if w == "(adjective)" or w == "(noun)" or w == "(verb)":
+            x = input("please give me a " + w + ":")
+            file.write(x + " ")
+        else:
             file.write(w + " ")
     file.close()
 
