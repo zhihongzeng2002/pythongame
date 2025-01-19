@@ -83,7 +83,7 @@ class Apple_move(Apple):
         self.Coord['y'] -= adjust_y
     
     def inside_camera(self, camera):
-        if self.Coord['x'] >= camera['left'] and self.['x'] < camera['right'] \
+        if self.Coord['x'] >= camera['left'] and self.Coord['x'] < camera['right'] \
             and self.Coord['y'] >= camera['bottom'] and self.Coord['y'] < \
             camera['top']:
             return True

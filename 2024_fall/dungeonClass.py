@@ -8,6 +8,7 @@ class piece():
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.display = "X"
 
     def move(self, x, y):
         self.x = self.clamp(self.x + x, 0, 9)
@@ -21,6 +22,17 @@ class piece():
         else:
             return i
 
+    def turn(self, x, y):
+        self.move(random.randint(-1, 1), random.randint(-1, 1))
+
+class playerPiece(piece):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.display = "O"
+    
+    def turn(self, x, y):
+        self.move(x, y)
+    
 def createBoard():
     return [["_"] * BOARDWIDTH for i in range(BOARDHEIGHT)]
 
@@ -34,7 +46,7 @@ def printBoard(board):
 def updateBoard(board, pieces):
     b = createBoard()
     for p in pieces:
-        b[p.y][p.x] = "X"
+        b[p.y][p.x] = p.display
 
     return b
 
@@ -42,7 +54,7 @@ def main():
     board = createBoard()
 
     pieces = []
-    pieces.append(piece(0, 0))
+    pieces.append(playerPiece(0, 0))
     pieces.append(piece(5, 5))
     pieces.append(piece(3, 3))
 
@@ -55,10 +67,10 @@ def main():
             print("Goodbye")
             break
 
-        mov = [1, 1]
+        mov = ans.split()
 
         for p in pieces:
-            p.move(random.randint(-1, 1), random.randint(-1, 1))
+            p.turn(int(mov[0]), int(mov[1]))
         
         board = updateBoard(board, pieces)
         printBoard(board)
